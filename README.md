@@ -52,6 +52,10 @@ https://www.uplift-modeling.com/en/latest/user_guide/introduction/comparison.htm
 
 ## 业界应用
 
+> 业界应用时会先做小流量探索实验收集训练样本，用于uplift model的建模
+
+> 根据业务特性和uplift model的结果上线策略调整实验。优惠券和广告投放涉及到成本预算和roi的问题，因此在求解uplift model之后，还需要做运筹优化求解，在成本和roi限制下，寻找最优解(决定哪部分用户发面额c的优惠券，决定哪部分用户做策略调整)。
+
 ### Push 
 
 #### 腾讯
