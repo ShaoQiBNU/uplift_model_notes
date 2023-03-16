@@ -81,7 +81,7 @@ https://zhuanlan.zhihu.com/p/451884908
 
 > 线上实验时，根据uplift score选择k%的用户做金币增发或者减发，查看实验指标。
 
-#### 抖音广告个性化adload
+#### 抖音广告个性化adload(adload：推送广告占比)
 > 用uplift建模用户在降低adload的LTV/duration/留存等增益价值，control组，大盘金adload系数；treatment组，大盘adload系数-0.3(随机写的)；优化目标：LTV。
 
 > 线上实验时，根据uplift score选择k%的用户做adload调整，查看实验指标。
