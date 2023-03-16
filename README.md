@@ -54,7 +54,7 @@ https://www.uplift-modeling.com/en/latest/user_guide/introduction/comparison.htm
 
 > 业界应用时会先做小流量探索实验收集训练样本，用于uplift model的建模
 
-> 根据业务特性和uplift model的结果上线策略调整实验。优惠券和广告投放涉及到成本预算和roi的问题，因此在求解uplift model之后，还需要做运筹优化求解，在成本和roi限制下，寻找最优解(决定哪部分用户发面额c的优惠券，决定哪部分用户做策略调整)。
+> 根据业务特性和uplift model的结果上线策略调整实验。其中，优惠券发放涉及到成本预算和roi的问题，因此在求解uplift model之后，还需要做运筹优化求解，在成本和roi限制下，寻找最优解(决定用户发面额多少的优惠券)。
 
 ### Push 
 
@@ -68,19 +68,25 @@ https://zhuanlan.zhihu.com/p/451884908
 ### 优惠券
 
 #### 字节千人千券
-> 用uplift建模用户在某面额优惠券的转化增益价值，control组，不发优惠券；treatment组，发优惠券，面额是c元；优化目标：是否转化，二分类
+> 用uplift建模用户在某面额优惠券的转化增益价值，control组，不发优惠券；treatment组，发优惠券，面额是c元；优化目标：是否转化，二分类？？？
+
+运筹求解：
+
+
 
 #### 抖音金币增发
 > 用uplift建模用户在增发金币的增益价值(LT、LTV和duration)，control组，大盘金币系数；treatment组，大盘金币系数+0.3(随机写的)；优化目标：LT、LTV和duration。
 
 > 如果需求是金币减发，则control组，大盘金币系数；treatment组，大盘金币系数-0.3(随机写的)；优化目标：LT、LTV和duration。
 
+> 线上实验时，根据uplift score选择k%的用户做金币增发或者减发，查看实验指标。
+
 #### 抖音广告个性化adload
 > 用uplift建模用户在降低adload的LTV/duration/留存等增益价值，control组，大盘金adload系数；treatment组，大盘adload系数-0.3(随机写的)；优化目标：LTV。
 
-**由于降低adload或金币减发会导致LTV的uplift score是负值，因此uplift curve是向下弯曲的，AUUC小于0.5**
+> 线上实验时，根据uplift score选择k%的用户做adload调整，查看实验指标。
 
-由于优惠券和广告投放涉及到成本预算和roi的问题，因此在求解uplift model之后，还需要做运筹优化求解，在成本和roi限制下，寻找最优解(决定哪部分用户发面额c的优惠券，决定哪部分用户做策略调整)。
+**由于降低adload或金币减发会导致LTV的uplift score是负值，因此uplift curve是向下弯曲的，AUUC小于0.5**
 
 待补充
 
