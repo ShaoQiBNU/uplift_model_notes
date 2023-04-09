@@ -85,8 +85,34 @@ $$ x_{i,j} \geq 0, \forall i,j $$
 > 其中，$ v_{i,j} $ 和 $ v_{i,0} $ 用uplift建模
 ，control组，不发优惠券；treatment组，随机发放优惠券(满60减10，满90减20，满98减30)；优化目标：是否转化，二分类
 
-> **整数规划问题**的求解可以采用拉格朗日方法，具体如下：
+> **整数规划问题**的求解可以采用拉格朗日乘数法，具体如下：
 
+$$ max L(x,\lambda) = {\max_{x}} {\min_{\lambda_B, \lambda_C}}  \sum_{i=1}^M\sum_{j=1}^Nv_{ij}x_{ij}+\lambda_B(B-\sum_{i=1}^M\sum_{j=1}^Nc_{j}x_{ij})+\lambda_C(\sum_{i=1}^M\sum_{j=1}^N(v_{ij}-v_{i0})t_{j}x_{ij}-ROI) $$
+
+求解算法采用ALS(alternating least squares)进行迭代求解：
+
+1. greedy初始化 $x_{ij}$：
+$$j_i=\argmax_j v_{ij} , x_{ij_i}=1$$
+
+2. 对 $\lambda$ 求最小值，沿梯度方向更新：
+
+$$\lambda_B=\max\{0, \lambda_B-\alpha{(B-\sum_{i=1}^M\sum_{j=1}^Nc_{j}x_{ij})}\}$$
+
+$$\lambda_C=\max\{0, \lambda_C-\alpha{(\sum_{i=1}^M\sum_{j=1}^Nt_{j}x_{ij}-C)}\}$$
+
+3. 固定当前 $\lambda$，通过遍历对 $x_{ij}$ 进行更新：
+$$j_i=\argmax_j \{v_{ij}-\lambda_Bc_j+\lambda_Ct_j\} , x_{ij_i}=1$$
+
+4. 重复2和3，直至 $\lambda$ 收敛
+其中，$\lambda_B, \lambda_C,\alpha$ 为超参数
+
+拉格朗日乘数法参考：
+
+https://zhuanlan.zhihu.com/p/55279698
+
+https://zhuanlan.zhihu.com/p/55532322
+
+https://dezeming.top/wp-content/uploads/2021/09/%E6%8B%89%E6%A0%BC%E6%9C%97%E6%97%A5%E4%B9%98%E5%AD%90%E6%B3%95%E2%80%94%E2%80%94%E5%B8%A6%E4%B8%8D%E7%AD%89%E5%BC%8F%E7%BA%A6%E6%9D%9F%E9%A1%B9%E7%9A%84%E5%87%BD%E6%95%B0%E4%BC%98%E5%8C%96.pdf
 
 
 #### 抖音金币增发
