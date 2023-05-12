@@ -39,6 +39,11 @@ https://www.uplift-modeling.com/en/latest/user_guide/introduction/comparison.htm
 
 > One Model版本和Two Model版本相比最大的优点是训练样本的共享可以使模型学习的更加充分，同时通过模型的学习也可以有效的避免双模型打分误差累积的问题，另外一个优点是从模型的层面可以支持multiple treatment的建模，具有比较强的实用性。同时和Two Model版本类似，它的缺点依然是其在本质上还是在对response建模，因此对uplift的建模还是比较间接，有一定提升的空间。
 
+##### Class Transformation Method
+
+> One Model和Two Model的缺点依然是在本质上还是在对response建模，因此对uplift的建模还是比较间接，有一定提升的空间，更为严谨的一种方式是Class Transformation Method，但该方法只适用于分类问题，具体推导如下：https://www.uplift-modeling.com/en/latest/user_guide/models/revert_label.html
+
+
 其他求解方法可以参考：https://www.uplift-modeling.com/en/latest/user_guide/index.html#user-guide
 
 #### Tree-based algorithms
