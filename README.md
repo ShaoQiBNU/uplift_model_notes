@@ -108,7 +108,7 @@ $$ \lambda_C=\max \{0, \lambda_C-\alpha{(\sum_{i=1}^M\sum_{j=1}^N(v_{ij}-v_{i0}
 
 3. 固定当前 $\lambda$，通过遍历对 $x_{ij}$ 进行更新，确定第 $j$ 张优惠券的收益最大：
 
-$$j_i= \mathop{\arg \max}_{j} {v_{ij}-\lambda_Bc_j+\lambda_Ct_j} , x_{ij_i}=1$$
+$$j_i= \arg \max_{j} {v_{ij}-\lambda_Bc_j+\lambda_Ct_j} , x_{ij_i}=1$$
 
 4. 重复2和3，直至 $\lambda$ 收敛
 其中，$\lambda_{B}$ $\lambda_{C}$ $\alpha$ 为超参数
