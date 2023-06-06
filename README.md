@@ -114,7 +114,7 @@ $$j_i= \arg \max_{j} {v_{ij}-\lambda_Bc_j+\lambda_Ct_j} , x_{ij_i}=1$$
 
 线上serving的时候，已知超参数 $\lambda_B, \lambda_C$ ，对于每个请求，通过以下公式确定符合全局收益最大化的优惠券 $x_{i,j}$
 
-$$ \arg \max_{x_{i,j}} \sum_{j=1}^Nv_{ij}x_{ij}+\lambda_B(B-\sum_{i=1}^M\sum_{j=1}^Nc_{j}x_{ij})+\lambda_C(\sum_{j=1}^N(v_{ij}-v_{i0})t_{j}x_{ij}-C) $$
+$$ \arg \max_{x_{i,j}} \sum_{j=1}^Nv_{ij}x_{ij}+\lambda_B(B-\sum_{j=1}^Nc_{j}x_{ij})+\lambda_C(\sum_{j=1}^N(v_{ij}-v_{i0})t_{j}x_{ij}-C) $$
 
 
 拉格朗日乘数法参考：
