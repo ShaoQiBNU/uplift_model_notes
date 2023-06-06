@@ -82,7 +82,7 @@ $$ s.t. \sum_{i=1}^{M}\sum_{j=1}^{N} c_{j}x_{i,j} \leq B $$
 
 $$ \frac{\sum_{i=1}^{M}\sum_{j=1}^{N} (v_{i,j} - v_{i,0})t_{j}x_{i,j}}{\sum_{i=1}^{M}\sum_{j=1}^{N} v_{i,j}c_{j}x_{i,j}} \geq ROI $$
 
-$$ \sum^{N}_{j=1} x_{i,j}=1, \forall i $$
+$$ \sum_{j=1}^{N} x_{i,j}=1, \forall i $$
 
 $$ x_{i,j} \geq 0, \forall i,j $$
 
