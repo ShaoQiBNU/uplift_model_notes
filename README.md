@@ -76,11 +76,11 @@ https://zhuanlan.zhihu.com/p/451884908
 
 > 总预算为 $B$，增量消耗ROI的约束为 $ROI$,  $r_{i,j}$ 为第 $i$ 个用户使用第 $j$ 张优惠券带来的收益,  $v_{i,j}$ 为第 $i$ 个用户使用第 $j$ 张优惠券的转化概率,  $v_{i,0}$ 为第 $i$ 个用户的自然转化概率,  $x_{i,j}$ 为第 $i$ 个用户是否使用第 $j$ 张优惠券,  $c_{j}$ 为第 $j$ 张优惠券的优惠金额,  $t_{j}$ 为第 $j$ 张优惠券的实际支付金额，则优惠券的分配问题可以转化为如下的**整数规划问题**：
 
-$$ \max \sum^{M}_{i=1}\sum^{N}_{j=1} r_{i,j}x_{i,j} $$
+$$ \max \sum_{i=1}^{M} \sum_{j=1}^{N} r_{i,j}x_{i,j} $$
 
-$$ s.t. \sum^{M}_{i=1}\sum^{N}_{j=1} c_{j}x_{i,j} \leq B $$
+$$ s.t. \sum_{i=1}^{M}\sum_{j=1}^{N} c_{j}x_{i,j} \leq B $$
 
-$$ \frac{\sum^{M}_{i=1}\sum^{N}_{j=1} (v_{i,j} - v_{i,0})t_{j}x_{i,j}}{\sum^{M}_{i=1}\sum^{N}_{j=1} v_{i,j}c_{j}x_{i,j}} \geq ROI $$
+$$ \frac{\sum_{i=1}^{M}\sum_{j=1}^{N} (v_{i,j} - v_{i,0})t_{j}x_{i,j}}{\sum_{i=1}^{M}\sum_{j=1}^{N} v_{i,j}c_{j}x_{i,j}} \geq ROI $$
 
 $$ \sum^{N}_{j=1} x_{i,j}=1, \forall i $$
 
@@ -111,8 +111,6 @@ $$j_i= \arg \max_{j} {v_{ij}-\lambda_Bc_j+\lambda_Ct_j} , x_{ij_i}=1$$
 
 4. 重复2和3，直至 $\lambda$ 收敛
 其中，$\lambda_{B}$ $\lambda_{C}$ $\alpha$ 为超参数
-
-$$ \max \sum_{i=1}^{M} \sum_{j=1}^{N} r_{i,j}x_{i,j} $$
 
 
 拉格朗日乘数法参考：
