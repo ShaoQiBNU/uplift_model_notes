@@ -107,14 +107,19 @@ $$ \lambda_C=\max \{0, \lambda_C-\alpha{(\sum_{i=1}^M\sum_{j=1}^N(v_{ij}-v_{i0}
 
 3. 固定当前 $\lambda$，通过遍历对 $x_{ij}$ 进行更新，确定第 $j$ 张优惠券的收益最大：
 
-$$j_i= \arg \max_{j} {v_{ij}-\lambda_Bc_j+\lambda_Ct_j} , x_{ij_i}=1$$
+$$j_i= \arg \max_{j} {v_{ij}-\lambda_Bc_j+\lambda_C(v_{ij}-v_{i0})t_j} , x_{ij_i}=1$$
 
 4. 重复2和3，直至 $\lambda$ 收敛
 其中 $\lambda_B$ 、 $\lambda_C$ 和 $\alpha$ 为超参数
 
-线上serving的时候，已知超参数 $\lambda_B, \lambda_C$ ，对于每个请求，通过以下公式确定符合全局收益最大化的优惠券 $x_{i,j}$
+线上serving的时候，已知超参数 $\lambda_B, \lambda_C$ ，对于每个请求，遍历每张优惠券，计算收益，确定符合全局收益最大化的优惠券 $x_{i,j}$
 
-$$ \arg \max_{x_{i,j}} \sum_{j=1}^Nv_{ij}x_{ij}+\lambda_B(B-\sum_{j=1}^Nc_{j}x_{ij})+\lambda_C(\sum_{j=1}^N(v_{ij}-v_{i0})t_{j}x_{ij}-C) $$
+$$ \arg \max_{x_{i,j}} v_{ij}x_{ij}+\lambda_B(B-c_{j}x_{ij})+\lambda_C\{(v_{ij}-v_{i0})t_{j}x_{ij}-C\}, x_{i,j}=1$$
+
+即(去掉了公式中的常数项)
+
+$$\arg \max_{j} {v_{ij}-\lambda_Bc_j+\lambda_C(v_{ij}-v_{i0})t_j}$$
+
 
 
 拉格朗日乘数法参考：
