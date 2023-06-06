@@ -82,7 +82,6 @@ $$ s.t. \sum^{M}_{i=1}\sum^{N}_{j=1} c_{j}x_{i,j} \leq B $$
 
 $$ \frac{\sum^{M}_{i=1}\sum^{N}_{j=1} (v_{i,j} - v_{i,0})t_{j}x_{i,j}}{\sum^{M}_{i=1}\sum^{N}_{j=1} v_{i,j}c_{j}x_{i,j}} \geq ROI $$
 
-
 $$ \sum^{N}_{j=1} x_{i,j}=1, \forall i $$
 
 $$ x_{i,j} \geq 0, \forall i,j $$
@@ -112,6 +111,9 @@ $$j_i= \arg \max_{j} {v_{ij}-\lambda_Bc_j+\lambda_Ct_j} , x_{ij_i}=1$$
 
 4. 重复2和3，直至 $\lambda$ 收敛
 其中，$\lambda_{B}$ $\lambda_{C}$ $\alpha$ 为超参数
+
+$$ \max \sum^{M}_{i=1}\sum^{N}_{j=1} r_{i,j}x_{i,j} $$
+
 
 拉格朗日乘数法参考：
 
