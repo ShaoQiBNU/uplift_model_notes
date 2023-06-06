@@ -97,13 +97,14 @@ $$ max L(x,\lambda) = {\max_{x}} {\min_{\lambda_B, \lambda_C}}  \sum_{i=1}^M\
 求解算法采用ALS(alternating least squares)进行迭代求解：
 
 1. greedy初始化 $x_{ij}$：
-$$j_i=\argmax_j v_{ij} , x_{ij_i}=1$$
+
+$$ j_i=\argmax_j v_{ij} , x_{ij_i}=1 $$
 
 2. 对 $\lambda$ 求最小值，沿梯度方向更新：
 
-$$ \lambda_B=\max {0, \lambda_B-\alpha{(B-\sum_{i=1}^M\sum_{j=1}^Nc_{j}x_{ij})} } $$
+$$ \lambda_B=\max \{0, \lambda_B-\alpha{(B-\sum_{i=1}^M\sum_{j=1}^Nc_{j}x_{ij})}\} $$
 
-$$ \lambda_C=\max {0, \lambda_C-\alpha{(\sum_{i=1}^M\sum_{j=1}^N(v_{ij}-v_{i0})t_{j}x_{ij}-C)} } $$
+$$ \lambda_C=\max \{0, \lambda_C-\alpha{(\sum_{i=1}^M\sum_{j=1}^N(v_{ij}-v_{i0})t_{j}x_{ij}-C)}\} $$
 
 3. 固定当前 $\lambda$，通过遍历对 $x_{ij}$ 进行更新，确定第 $j$ 张优惠券的收益最大：
 
