@@ -98,7 +98,7 @@ $$ max L(x,\lambda) = {\max_{x}} {\min_{\lambda_B, \lambda_C}}  \sum_{i=1}^M\
 
 1. greedy初始化 $x_{ij}$：
 
-$$ j_i= \arg \max_{\theta} v_{ij} , x_{ij_i}=1 $$
+$$ j_i= \arg \max_{j} v_{ij} , x_{ij_i}=1 $$
 
 2. 对 $\lambda$ 求最小值，沿梯度方向更新：
 
