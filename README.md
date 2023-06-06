@@ -74,13 +74,13 @@ https://zhuanlan.zhihu.com/p/451884908
 
 #### 字节千人千券
 
-> 总预算为 $B$，增量消耗ROI的约束为 $ROI$,  $r_{i,j}$ 为第 $i$ 个用户使用第 $j$ 张优惠券带来的收益,  $v_{i,j}$ 为第 $i$ 个用户使用第 $j$ 张优惠券的转化概率,  $v_{i,0}$ 为第 $i$ 个用户的自然转化概率,  $x_{i,j}$ 为第 $i$ 个用户是否使用第 $j$ 张优惠券,  $c_{j}$ 为第 $j$ 张优惠券的优惠金额,  $t_{j}$ 为第 $j$ 张优惠券的实际支付金额，则优惠券的分配问题可以转化为如下的**整数规划问题**：
+> 总预算为 $B$，消耗约束为 $C$，$ROI = \frac{C}{B}$,  $r_{i,j}$ 为第 $i$ 个用户使用第 $j$ 张优惠券带来的收益,  $v_{i,j}$ 为第 $i$ 个用户使用第 $j$ 张优惠券的转化概率,  $v_{i,0}$ 为第 $i$ 个用户的自然转化概率,  $x_{i,j}$ 为第 $i$ 个用户是否使用第 $j$ 张优惠券,  $c_{j}$ 为第 $j$ 张优惠券的优惠金额,  $t_{j}$ 为第 $j$ 张优惠券的实际支付金额，则优惠券的分配问题可以转化为如下的**整数规划问题**：
 
 $$ \max \sum_{i=1}^{M} \sum_{j=1}^{N} r_{i,j}x_{i,j} $$
 
 $$ s.t. \sum_{i=1}^{M}\sum_{j=1}^{N} c_{j}x_{i,j} \leq B $$
 
-$$ \frac{\sum_{i=1}^{M}\sum_{j=1}^{N} (v_{i,j} - v_{i,0})t_{j}x_{i,j}}{\sum_{i=1}^{M}\sum_{j=1}^{N} v_{i,j}c_{j}x_{i,j}} \geq ROI $$
+$$ \sum_{i=1}^{M}\sum_{j=1}^{N} (v_{i,j} - v_{i,0})t_{j}x_{i,j} \geq C $$
 
 $$ \sum_{j=1}^{N} x_{i,j}=1, \forall i $$
 
@@ -91,7 +91,7 @@ $$ x_{i,j} \geq 0, \forall i,j $$
 
 > **整数规划问题**的求解可以采用拉格朗日乘数法，具体如下：
 
-$$ max L(x,\lambda) = {\max_{x}} {\min_{\lambda_B, \lambda_C}}  \sum_{i=1}^M\sum_{j=1}^Nv_{ij}x_{ij}+\lambda_B(B-\sum_{i=1}^M\sum_{j=1}^Nc_{j}x_{ij})+\lambda_C(\sum_{i=1}^M\sum_{j=1}^N(v_{ij}-v_{i0})t_{j}x_{ij}-ROI) $$
+$$ max L(x,\lambda) = {\max_{x}} {\min_{\lambda_B, \lambda_C}}  \sum_{i=1}^M\sum_{j=1}^Nv_{ij}x_{ij}+\lambda_B(B-\sum_{i=1}^M\sum_{j=1}^Nc_{j}x_{ij})+\lambda_C(\sum_{i=1}^M\sum_{j=1}^N(v_{ij}-v_{i0})t_{j}x_{ij}-C) $$
 
 求解算法采用ALS(alternating least squares)进行迭代求解：
 
