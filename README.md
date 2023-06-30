@@ -143,7 +143,7 @@ $$\arg \max_{j} {v_{ij}-\lambda_Bc_j+\lambda_C(v_{ij}-v_{i0})t_j}$$
 
 2. MCKP求解
 
-根据2和3更新参数求解，得到每个用户的最优解，具体见：
+根据2和3更新参数求解，得到每个用户的最优解，具体见：https://github.com/ShaoQiBNU/uplift_model_notes/blob/main/%E5%8D%83%E4%BA%BA%E5%8D%83%E5%88%B8MCKP%E6%B1%82%E8%A7%A3.ipynb
 
 
 拉格朗日乘数法参考：
