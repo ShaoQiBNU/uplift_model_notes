@@ -119,6 +119,28 @@ $$ \arg \max_{x_{i,j}} v_{ij}x_{ij}+\lambda_B(B-c_{j}x_{ij})+\lambda_C\{(v_{ij}
 
 $$\arg \max_{j} {v_{ij}-\lambda_Bc_j+\lambda_C(v_{ij}-v_{i0})t_j}$$
 
+**优惠券一般为灌发形式，直接灌发到用户的账户里，曝光预算等同于发放预算，约束为发放预算；而有的激励场景，如充赠红包，需要用户充值后再发放红包，曝光预算高于发放预算，但约束是发放预算，因此相应的约束公式变为：**
+
+$$ s.t. \sum_{i=1}^{M}\sum_{j=1}^{N} c_{j}v_{ij}x_{i,j} \leq B $$
+
+**对于消耗约束 $C$，有的场景限制为uplift下的消耗，有的场景限制为普通消耗，汇总两者总结下来，如表所示：**
+
+|  字段名称   | 字段含义  | 消耗  |
+|  ----  | ----  | ---- |
+| expected_coupon_reduce | coupon_reduce | $B$
+| expected_coupon_convert_reduce | is_convert * coupon_reduce | $B$
+| expected_coupon_threshold | is_convert * coupon_threshold | $C$
+| expected_coupon_threshold_uplift | (is_convert - control_convert) * coupon_threshold | $C$
+
+**针对 $B$ 和 $C$ 的所有组合情况，求解公式如表所示：**
+
+|  预算约束   | 消耗约束  | 求解公式  |
+|  ----  | ----  | ---- |
+| expected_coupon_reduce | expected_coupon_threshold | $$\arg \max_{j} {v_{ij}-\lambda_Bc_j+\lambda_Ct_j}$$
+|expected_coupon_reduce | expected_coupon_threshold_uplift | $$\arg \max_{j} {v_{ij}-\lambda_Bc_j+\lambda_C(v_{ij}-v_{i0})t_j}$$
+| expected_coupon_convert_reduce | expected_coupon_threshold | $$\arg \max_{j} {v_{ij}-\lambda_Bv_{ij}c_j+\lambda_Ct_j}$$
+| expected_coupon_convert_reduce | expected_coupon_threshold_uplift | $$\arg \max_{j} {v_{ij}-\lambda_Bv_{ij}c_j+\lambda_C(v_{ij}-v_{i0})t_j}$$
+
 **pyspark实现代码**
 
 1. mock一份数据
@@ -133,7 +155,16 @@ $$\arg \max_{j} {v_{ij}-\lambda_Bc_j+\lambda_C(v_{ij}-v_{i0})t_j}$$
 | coupon_threshold | 优惠券的门槛，用于消耗约束，即 $t_{j}$
 | is_convert | 在优惠券id下的转化概率
 | control_convert| control下的转化概率
-| expeted_uplift | (is_convert - control_convert) * coupon_threshold
+
+以下4列根据业务情况自行选择
+
+|  字段名   | 计算逻辑  |
+|  ----  | ----  |
+| expected_coupon_reduce | coupon_reduce |
+| expected_coupon_convert_reduce | is_convert * coupon_reduce |
+| expected_coupon_threshold | is_convert * coupon_threshold |
+| expected_coupon_threshold_uplift | (is_convert - control_convert) * coupon_threshold |
+
 
 
 - 对于促活业务场景，存在不发优惠券的情况，所以每个用户会有一行空优惠券的记录，空优惠券同样参与运筹求解；
