@@ -145,7 +145,7 @@ $$ s.t. \sum_{i=1}^{M}\sum_{j=1}^{N} c_{j}v_{ij}x_{i,j} \leq B $$
 
 1. mock一份数据
 
-> 数据字段如下，每一行代表用户在每张优惠券下的转化概率、自然转化概率，以及该优惠券的赠款和门槛。
+> 数据字段如下，每一行代表用户在每张优惠券下的转化概率、自然转化概率，以及该优惠券的赠款和门槛，根据业务情况自行选择 $B$ 和 $C$ 的计算逻辑。
 
 |  字段名   | 含义  |
 |  ----  | ----  |
@@ -155,16 +155,6 @@ $$ s.t. \sum_{i=1}^{M}\sum_{j=1}^{N} c_{j}v_{ij}x_{i,j} \leq B $$
 | coupon_threshold | 优惠券的门槛，用于消耗约束，即 $t_{j}$
 | is_convert | 在优惠券id下的转化概率
 | control_convert| control下的转化概率
-
-以下4列根据业务情况自行选择
-
-|  字段名   | 计算逻辑  |
-|  ----  | ----  |
-| expected_coupon_reduce | coupon_reduce |
-| expected_coupon_convert_reduce | is_convert * coupon_reduce |
-| expected_coupon_threshold | is_convert * coupon_threshold |
-| expected_coupon_threshold_uplift | (is_convert - control_convert) * coupon_threshold |
-
 
 
 - 对于促活业务场景，存在不发优惠券的情况，所以每个用户会有一行空优惠券的记录，空优惠券同样参与运筹求解；
