@@ -188,7 +188,7 @@ $$ E_{T} = K_{P} P_{T} + K_{I} I_{T} + K_{D} D_{T} $$
 其中：
 $$ K_{P}， K_{I}， K_{D}是超参数，用于控制调节比例的系数 $$
 
-$$ P是预算误差 P_{T} = \frac{B_{target} - B_{T-1}}{B_{target}} $$
+$$ P是预算误差 P_{T} = \frac{B_{target} - B_{T-1}}{B_{target}}，B_{target} 是期望预算，B_{T-1} 是实际预算 $$
 
 $$ I是预算误差的积分，I_{T} = \sum_{t=T-i}^{T}P_{T}，i是积分天数 $$
 
