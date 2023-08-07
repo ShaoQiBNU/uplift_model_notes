@@ -99,7 +99,7 @@ d. 计算每个segment k的actual uplift $ u_{ka} = \frac{r_k^t}{n_k^t} - \frac{
 e. 计算完每个segment的 $ u_{kp} $ 和 $ u_{ka} $ 就可以作图了
 
 
-![image](https://github.com/ShaoQiBNU/uplift_model_notes/tree/main/imgs/1.jpg)
+![image](https://github.com/ShaoQiBNU/uplift_model_notes/blob/main/imgs/1.jpg)
 
 
 这个图就是uplift by deciles graph，我们要怎么去根据这个图和上面提到的这三个标准去评价这个模型呢？
