@@ -161,7 +161,9 @@ $$ AUUC = \int_{0}^{1} AUUC_\pi(\rho ) {\rm d}\rho $$
 
 参考：
 https://zhuanlan.zhihu.com/p/399322196
+
 https://blog.csdn.net/zwqjoy/article/details/124493074
+
 https://hwcoder.top/Uplift-1#%E6%A8%A1%E5%9E%8B%E8%AF%84%E4%BC%B0
 
 代码采用开源scikit-uplift：
