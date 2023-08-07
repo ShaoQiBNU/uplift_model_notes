@@ -80,23 +80,27 @@ $R_\pi(k)$ 代表前 $k$ 个样本中 $Y=1$ 的样本个数
 
 $R^T_\pi(k) = R_\pi(k)|T=1$ 代表前 $k$ 个样本中treatment组下 $Y=1$ 的个数，$R^C_\pi(k) = R_\pi(k)|T=0$ 代表前 $k$ 个样本中control组下 $Y=1$ 的个数
 
-$\overline{R}^T(k)$ 代表任意 $k$ 个样本中treatment组下 $Y=1$ 的个数，$ \overline{R}^C(k)$ 代表前 $k$ 个样本中control组下 $Y=1$ 的个数
+$\overline{R}^T(k)$ 代表任意 $k$ 个样本中treatment组下 $Y=1$ 的个数
 
-$N^T_\pi(k)$ 代表前 $k$ 个样本中treatment组的样本个数，$N^C_\pi(k)$ 代表前 $k$ 个样本中control组的样本个数
+$\overline{R}^C(k)$ 代表前 $k$ 个样本中control组下 $Y=1$ 的个数
+
+$N^T_\pi(k)$ 代表前 $k$ 个样本中treatment组的样本个数 
+
+$N^C_\pi(k)$ 代表前 $k$ 个样本中control组的样本个数
 
 > uplift模型的评估指标
 
 1. uplift by deciles graph 
 
-a. 对 $ X $ 中所有样本计算uplift $ u(x) $ 并按照倒序排列
+a. 对 $X$ 中所有样本计算uplift $u(x)$ 并按照倒序排列
 
-b. 对 $ u(x) $ 切分成10份，找到切分边界 $ b_0, b_1, ...., b_K, K=10 $
+b. 对 $u(x)$ 切分成10份，找到切分边界 $b_0, b_1, ...., b_K, K=10$
 
-c. 计算每个segment k的predicted uplift $ u_{kp} = \frac{1}{n_k^t + n_k^c} \sum_{b_{k-1} < u(x) < b_{k}} u(x) $ 也就是均值
+c. 计算每个segment k的predicted uplift $u_{kp} = \frac{1}{n_k^t + n_k^c} \sum_{b_{k-1} < u(x) < b_{k}} u(x)$ 也就是均值
 
-d. 计算每个segment k的actual uplift $ u_{ka} = \frac{r_k^t}{n_k^t} - \frac{r_k^c}{n_k^c} $ 
+d. 计算每个segment k的actual uplift $u_{ka} = \frac{r_k^t}{n_k^t} - \frac{r_k^c}{n_k^c}$ 
 
-e. 计算完每个segment的 $ u_{kp} $ 和 $ u_{ka} $ 就可以作图了
+e. 计算完每个segment的 $u_{kp}$ 和 $u_{ka}$ 就可以作图了
 
 
 ![image](https://github.com/ShaoQiBNU/uplift_model_notes/blob/main/imgs/1.jpg)
