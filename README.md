@@ -70,19 +70,19 @@ $K$ 是画图时用的bins的数量，即segment个数，当我们是deciles时�
 
 $r_k^t, r_k^c$ 是k segment里treatment组中 $Y=1$ 的样本个数和control组中 $ Y=1 $  的样本个数
 
-$ n_k^t, n_k^c $ 是k segment里treatment组的样本个数和control组的样本个数
+$n_k^t, n_k^c$ 是k segment里treatment组的样本个数和control组的样本个数
 
-$ \pi $ 代表把 $ u(x) $ 从大到小降序排的一个order，我们有 $ u^\pi(x_{i}) > u^\pi(x_{j}), {\forall} i < j $ 
+$\pi$ 代表把 $u(x)$ 从大到小降序排的一个order，我们有 $u^\pi(x_{i}) > u^\pi(x_{j}), {\forall} i < j$ 
 
-$ \pi(k) $ 代表按照 $ \pi $ 进行排序后的 Top k 的 样本，我们有 $ u^\pi(x_{l}) < u^\pi(x_{i}), {\forall} l > k, i \leq k $ 
+$\pi(k)$ 代表按照 $\pi$ 进行排序后的 Top k 的 样本，我们有 $u^\pi(x_{l}) < u^\pi(x_{i}), {\forall} l > k, i \leq k$ 
 
-$ R_\pi(k) $ 代表前 $ k $ 个样本中 $ Y=1 $ 的样本个数
+$R_\pi(k)$ 代表前 $k$ 个样本中 $Y=1$ 的样本个数
 
-$ R^T_\pi(k) = R_\pi(k)|T=1 $ 代表前 $ k $ 个样本中treatment组下 $ Y=1 $ 的个数，$ R^C_\pi(k) = R_\pi(k)|T=0 $ 代表前 $ k $ 个样本中control组下 $ Y=1 $ 的个数
+$R^T_\pi(k) = R_\pi(k)|T=1$ 代表前 $k$ 个样本中treatment组下 $Y=1$ 的个数，$R^C_\pi(k) = R_\pi(k)|T=0$ 代表前 $k$ 个样本中control组下 $Y=1$ 的个数
 
-$ \overline{R}^T(k) $ 代表任意 $ k $ 个样本中treatment组下 $ Y=1 $ 的个数，$ \overline{R}^C(k) $ 代表前 $ k $ 个样本中control组下 $ Y=1 $ 的个数
+$\overline{R}^T(k)$ 代表任意 $k$ 个样本中treatment组下 $Y=1$ 的个数，$ \overline{R}^C(k)$ 代表前 $k$ 个样本中control组下 $Y=1$ 的个数
 
-$ N^T_\pi(k) $ 代表前 $ k $ 个样本中treatment组的样本个数，$ N^C_\pi(k) $ 代表前 $ k $ 个样本中control组的样本个数
+$N^T_\pi(k)$ 代表前 $k$ 个样本中treatment组的样本个数，$N^C_\pi(k)$ 代表前 $k$ 个样本中control组的样本个数
 
 > uplift模型的评估指标
 
