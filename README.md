@@ -2,7 +2,7 @@
 
 ## 何为uplift？
 
-> uplift model 用于预测treatment的增量反馈价值，常应用在Push推送、广告投放等场景。比如，我们想知道对用户展现广告的价值，通常的模型只能建模用户在展示广告后的购买意愿，但事实很有可能是他们在被展示广告之前就已经很想购买了，这个时候展示广告反而会增加投放成本。因此，Push推送和广告投放等场景常采用uplift model建模增量反馈价值，在减少对用户打扰和降低成本的同时，提高业务价值，如DAU增益、广告主价值、LTV、观看时长等。
+> uplift model 用于预测treatment的增量反馈价值，常应用在Push推送、广告投放、个性化激励等场景。比如，我们想知道对用户展现广告的价值，通常的模型只能建模用户在展示广告后的购买意愿，但事实很有可能是他们在被展示广告之前就已经很想购买了，这个时候展示广告反而会增加投放成本。因此，Push推送和广告投放等场景常采用uplift model建模增量反馈价值，在减少对用户打扰和降低成本的同时，提高业务价值，如DAU增益、广告主价值、LTV、观看时长等。
 
 参考：
 
@@ -53,7 +53,56 @@ https://www.uplift-modeling.com/en/latest/user_guide/introduction/comparison.htm
 待补充
 
 ### 评估指标
-待补充
+
+> 问题设定
+
+定义如下：一个样本在发券后是否下单，即 $ T $ 与 $ Y $ 都是binary：
+
+$$ T \in {0, 1} $$
+
+$$ Y \in {0, 1} $$
+
+$ X $ 是validation set，用来测试模型
+
+$ u $ 是训练得到的uplift模型， $ u(x) $ 是对于样本 $x$ 预测出的uplift值
+
+$ K $ 是画图时用的bins的数量，即segment个数，当我们是deciles时，$ K = 10 $ 
+
+$ r_k^t, r_k^c $ 是k segment里treatment组中 $ Y=1 $ 的样本个数和control组中 $ Y=1 $  的样本个数
+
+$ n_k^t, n_k^c $ 是k segment里treatment组的样本个数和control组的样本个数
+
+$ \pi $ 代表把 $ u(x) $ 从大到小降序排的一个order，我们有 $ u^\pi(x_{i}) > u^\pi(x_{j}), {\forall} i < j $ 
+
+$ \pi(k) $ 代表按照 $ \pi $ 进行排序后的 Top k 的 样本，我们有 $ u^\pi(x_{l}) < u^\pi(x_{i}), {\forall} l > k, i \leq k $ 
+
+$ R_\pi(k) $ 代表前 $ k $ 个样本中 $ Y=1 $ 的样本个数
+
+$ R^T_\pi(k) = R_\pi(k)|T=1 $ 代表前 $ k $ 个样本中treatment组下 $ Y=1 $ 的个数，$ R^C_\pi(k) = R_\pi(k)|T=0 $ 代表前 $ k $ 个样本中control组下 $ Y=1 $ 的个数
+
+$ N^T_\pi(k) $ 代表前 $ k $ 个样本中treatment组的样本个数，$ N^C_\pi(k) $ 代表前 $ k $ 个样本中control组的样本个数
+
+> uplift模型的评估指标
+
+1. uplift curve 
+
+2. AUUC
+
+3. Qini curve
+
+4. Qini score
+
+
+
+
+参考：
+https://zhuanlan.zhihu.com/p/399322196
+https://blog.csdn.net/zwqjoy/article/details/124493074
+https://hwcoder.top/Uplift-1#%E6%A8%A1%E5%9E%8B%E8%AF%84%E4%BC%B0
+
+代码采用开源scikit-uplift：
+https://github.com/maks-sh/scikit-uplift/tree/master
+
 
 ## 业界应用
 
