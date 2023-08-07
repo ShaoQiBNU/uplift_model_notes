@@ -66,9 +66,9 @@ $X$ 是validation set，用来测试模型
 
 $u$ 是训练得到的uplift模型， $u(x)$ 是对于样本 $x$ 预测出的uplift值
 
-$K$ 是画图时用的bins的数量，即segment个数，当我们是deciles时，$K = 10$ 
+$K$ 是画图时用的bins的数量，即segment个数，当我们是deciles时 $K = 10$ 
 
-$r_k^t, r_k^c$ 是k segment里treatment组中 $Y=1$ 的样本个数和control组中 $ Y=1 $  的样本个数
+$r_k^t, r_k^c$ 是k segment里treatment组中 $Y=1$ 的样本个数和control组中 $Y=1$  的样本个数
 
 $n_k^t, n_k^c$ 是k segment里treatment组的样本个数和control组的样本个数
 
