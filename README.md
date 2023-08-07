@@ -129,19 +129,32 @@ e. 计算完每个segment的 $u_{kp}$ 和 $u_{ka}$ 就可以作图了
 
 横轴表示 topK 的样本，纵轴是这些样本中的treatment组中 $Y=1$ 的个数减去control组中 $Y=1$ 的个数。按照上述提到的序 $\pi(k)$ 即把uplift降序排列，这条曲线 (uplift curve) 的纵轴就是 $R^T_\pi(k) - R^C_\pi(k)$ 。这条曲线 (baseline) 的纵轴就是 $\overline{R}^T(k) - \overline{R}^C(k)$ 如图所示：
 
+TODO y轴值含义不对？
 
-这里baseline直观解释就是：任意取 $k$ 个样本，treatment组中 $Y=1$ 的个数减去control组中 $Y=1$ 的个数。比方说一共20个样本，treatment组10个，control组10个，其中treatment组中 $Y=1$ 的8个，control组中 $Y=1$ 的5个，则baseline的纵轴值就是 $0.8 - 0.5 = 0.3$，所以baseline就是一条斜率为 $0.3$ 的直线。
+![image](https://github.com/ShaoQiBNU/uplift_model_notes/blob/main/imgs/2.jpg)
 
-这里uplift curve直观解释就是uplift最大的前 $k$ 个样本里，treatment组中 $Y=1$ 的个数减去control组中 $Y=1$ 的个数，所以这个曲线最后一定会和baseline交汇，因为在全部样本下，uplift curve和baseline的计算结果必定相等。
+这里baseline直观解释就是：任意取 $k$ 个样本，treatment组中 $Y=1$ 的个数减去control组中 $Y=1$ 的个数。比方说一共20个样本，treatment组10个，control组10个，其中treatment组中 $Y=1$ 的8个，control组中 $Y=1$ 的5个，则baseline的纵轴值就是 $8 - 5 = 3$，所以baseline就是一条斜率为 $0.15$ 的直线。
+
+这里uplift curve直观解释就是uplift最大的前 $k$ 个样本里treatment组中 $Y=1$ 的个数减去control组中 $Y=1$ 的个数，所以这个曲线最后一定会和baseline交汇，因为在全部样本下，uplift curve和baseline的计算结果必定相等。
 
 我们希望在 $k$ 越小的地方，treatment组中 $Y=1$ 的个数与control组中 $Y=1$  的个数的差值越大，证明uplift大的样本确实是那些给treatment就更能转化的样本。但这里的差值是一个绝对值的差，这并不合理，如果本身这个测试集treatment组的数量就显著的小于control组，那就算这个uplift模型再好，这个差值可能都是负的，所以这个怎么解决后面一个方法会讲到。
 
 
 3. AUUC
 
+AUUC就是uplift curve和baseline两条线中间的面积，越大越好。明细公式如下：
+
+$$ AUUC_\pi(k) = \sum_{i=1}^k (R^T_\pi(i) - R^C_\pi(i)) - \frac{k}{2}( \overline{R}^T(k) - \overline{R}^C(k)) $$
+
+$$ AUUC = \int_{0}^{1} AUUC_\pi(\rho ) {\rm d}\rho $$
+
 4. Qini curve
 
-5. Qini score
+
+
+
+5. Qini Coefficient
+
 
 
 
