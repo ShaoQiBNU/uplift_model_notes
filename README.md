@@ -80,17 +80,47 @@ $ R_\pi(k) $ 代表前 $ k $ 个样本中 $ Y=1 $ 的样本个数
 
 $ R^T_\pi(k) = R_\pi(k)|T=1 $ 代表前 $ k $ 个样本中treatment组下 $ Y=1 $ 的个数，$ R^C_\pi(k) = R_\pi(k)|T=0 $ 代表前 $ k $ 个样本中control组下 $ Y=1 $ 的个数
 
+$ \overline{R}^T(k) $ 代表任意 $ k $ 个样本中treatment组下 $ Y=1 $ 的个数，$ \overline{R}^C(k) $ 代表前 $ k $ 个样本中control组下 $ Y=1 $ 的个数
+
 $ N^T_\pi(k) $ 代表前 $ k $ 个样本中treatment组的样本个数，$ N^C_\pi(k) $ 代表前 $ k $ 个样本中control组的样本个数
 
 > uplift模型的评估指标
 
-1. uplift curve 
+1. uplift by deciles graph 
 
-2. AUUC
+a. 对 $ X $ 中所有样本计算uplift $ u(x) $ 并按照倒序排列
 
-3. Qini curve
+b. 对 $ u(x) $ 切分成10份，找到切分边界 $ b_0, b_1, ...., b_K, K=10 $
 
-4. Qini score
+c. 计算每个segment k的predicted uplift $ u_{kp} = \frac{1}{n_k^t + n_k^c} \sum_{b_{k-1} < u(x) < b_{k}} u(x) $ 也就是均值
+
+d. 计算每个segment k的actual uplift $ u_{ka} = \frac{r_k^t}{n_k^t} - \frac{r_k^c}{n_k^c} $ 
+
+e. 计算完每个segment的 $ u_{kp} $ 和 $ u_{ka} $ 就可以作图了
+
+
+![image](https://github.com/ShaoQiBNU/uplift_model_notes/tree/main/imgs/1.jpg)
+
+
+这个图就是uplift by deciles graph，我们要怎么去根据这个图和上面提到的这三个标准去评价这个模型呢？
+
+- Monotonicity of incremental gains
+这个想说的是actual和predicted的uplift在单调性上是否一致，即是不是predicted uplift越大的segment，actual uplift同样也越大。也就是说，由于predicted uplift一定是单调下降的（因为我们是按这个大小排序的），actual uplift也应该是严格单调下降的。可以看到这个图上的模型基本满足，但是在20%，80%和90%这三个segment上不完全单调。
+
+- Tight validation
+每个segment里，actual uplift和predicted uplift在数值上是否足够接近，即两根柱子是不是一样长，越一样越好，表明一个预测的准确性
+
+- Range of Predictions
+最大的predicted uplift（最左那根柱子）和最小的predicted uplift（最右那根柱子），差距是否足够大。为什么要衡量这个呢？假设我们有一个模型，预测出来每个样本的uplift都是一样的，即使这个模型平均来看是比较准的，但是没有实际意义，因为我们实际上必须要求模型能够区分出uplift较大和较小的两群人，不然我们怎么发券？怎么投放？所以这里就要求模型能够在uplift上预测出足够的区分度。
+
+
+2. uplift curve 
+
+3. AUUC
+
+4. Qini curve
+
+5. Qini score
 
 
 
