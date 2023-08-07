@@ -56,7 +56,7 @@ https://www.uplift-modeling.com/en/latest/user_guide/introduction/comparison.htm
 
 > 问题设定
 
-定义如下：一个样本在发券后是否下单，即 $ T $ 与 $ Y $ 都是binary：
+定义如下：一个样本在发券后是否下单，即 $T$ 与 $Y$ 都是binary：
 
 $$ T \in {0, 1} $$
 
@@ -64,7 +64,7 @@ $$ Y \in {0, 1} $$
 
 $ X $ 是validation set，用来测试模型
 
-$ u $ 是训练得到的uplift模型， $ u(x) $ 是对于样本 $x$ 预测出的uplift值
+$ u $ 是训练得到的uplift模型， $u(x)$ 是对于样本 $x$ 预测出的uplift值
 
 $ K $ 是画图时用的bins的数量，即segment个数，当我们是deciles时，$ K = 10 $ 
 
