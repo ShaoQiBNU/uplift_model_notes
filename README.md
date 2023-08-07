@@ -78,13 +78,15 @@ $\pi(k)$ 代表按照 $\pi$ 进行排序后的 Top k 的 样本，我们有 $u^\
 
 $R_\pi(k)$ 代表前 $k$ 个样本中 $Y=1$ 的样本个数
 
-$R^T_\pi(k) = R_\pi(k)|T=1$ 代表前 $k$ 个样本中treatment组下 $Y=1$ 的个数，$R^C_\pi(k) = R_\pi(k)|T=0$ 代表前 $k$ 个样本中control组下 $Y=1$ 的个数
+$R^T_\pi(k) = R_\pi(k)|T=1$ 代表前 $k$ 个样本中treatment组下 $Y=1$ 的个数
+
+$R^C_\pi(k) = R_\pi(k)|T=0$ 代表前 $k$ 个样本中control组下 $Y=1$ 的个数
 
 $\overline{R}^T(k)$ 代表任意 $k$ 个样本中treatment组下 $Y=1$ 的个数
 
 $\overline{R}^C(k)$ 代表前 $k$ 个样本中control组下 $Y=1$ 的个数
 
-$N^T_\pi(k)$ 代表前 $k$ 个样本中treatment组的样本个数 
+$N^T_\pi(k)$ 代表前 $k$ 个样本中treatment组的样本个数
 
 $N^C_\pi(k)$ 代表前 $k$ 个样本中control组的样本个数
 
