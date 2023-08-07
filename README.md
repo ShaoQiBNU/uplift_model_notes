@@ -111,16 +111,31 @@ e. 计算完每个segment的 $u_{kp}$ 和 $u_{ka}$ 就可以作图了
 这个图就是uplift by deciles graph，我们要怎么去根据这个图和上面提到的这三个标准去评价这个模型呢？
 
 - Monotonicity of incremental gains
-这个想说的是actual和predicted的uplift在单调性上是否一致，即是不是predicted uplift越大的segment，actual uplift同样也越大。也就是说，由于predicted uplift一定是单调下降的（因为我们是按这个大小排序的），actual uplift也应该是严格单调下降的。可以看到这个图上的模型基本满足，但是在20%，80%和90%这三个segment上不完全单调。
+
+这个想说的是actual和predicted的uplift在单调性上是否一致，即是不是predicted uplift越大的segment，actual uplift同样也越大。也就是说，由于predicted uplift一定是单调下降的（因为我们是按这个大小排序的），actual uplift也应该是严格单调下降的。可以看到这个图上的模型基本满足，但是在10-20%，20-30%，30-40%，90-100%这4个segment上不完全单调。
 
 - Tight validation
+
 每个segment里，actual uplift和predicted uplift在数值上是否足够接近，即两根柱子是不是一样长，越一样越好，表明一个预测的准确性
 
 - Range of Predictions
+
 最大的predicted uplift（最左那根柱子）和最小的predicted uplift（最右那根柱子），差距是否足够大。为什么要衡量这个呢？假设我们有一个模型，预测出来每个样本的uplift都是一样的，即使这个模型平均来看是比较准的，但是没有实际意义，因为我们实际上必须要求模型能够区分出uplift较大和较小的两群人，不然我们怎么发券？怎么投放？所以这里就要求模型能够在uplift上预测出足够的区分度。
 
 
+此方法很难量化，毕竟是看图说话，方法之间有什么可能很难分出孰优孰劣，更多就是一个insight上的考量，去感觉这个模型靠不靠谱。不过这个方法其实已经可以比较全面的帮助我们去评判一个模型了。并且在实际应用时，Range of Predictions其实非常重要，因为我们往往并不要求全局精准，反倒是如果可以能够对最头部的segment预测准，就足以帮助我们对最大的uplift组进行投放了。
+
 2. uplift curve 
+
+横轴表示 topK 的样本，纵轴是这些样本中的treatment组中 $Y=1$ 的个数减去control组中 $Y=1$ 的个数。按照上述提到的序 $\pi(k)$ 即把uplift降序排列，这条曲线 (uplift curve) 的纵轴就是 $R^T_\pi(k) - R^C_\pi(k)$ 。这条曲线 (baseline) 的纵轴就是 $\overline{R}^T(k) - \overline{R}^C(k)$ 如图所示：
+
+
+这里baseline直观解释就是：任意取 $k$ 个样本，treatment组中 $Y=1$ 的个数减去control组中 $Y=1$ 的个数。比方说一共20个样本，treatment组10个，control组10个，其中treatment组中 $Y=1$ 的8个，control组中 $Y=1$ 的5个，则baseline的纵轴值就是 $0.8 - 0.5 = 0.3$，所以baseline就是一条斜率为 $0.3$ 的直线。
+
+这里uplift curve直观解释就是uplift最大的前 $k$ 个样本里，treatment组中 $Y=1$ 的个数减去control组中 $Y=1$ 的个数，所以这个曲线最后一定会和baseline交汇，因为在全部样本下，uplift curve和baseline的计算结果必定相等。
+
+我们希望在 $k$ 越小的地方，treatment组中 $Y=1$ 的个数与control组中 $Y=1$  的个数的差值越大，证明uplift大的样本确实是那些给treatment就更能转化的样本。但这里的差值是一个绝对值的差，这并不合理，如果本身这个测试集treatment组的数量就显著的小于control组，那就算这个uplift模型再好，这个差值可能都是负的，所以这个怎么解决后面一个方法会讲到。
+
 
 3. AUUC
 
