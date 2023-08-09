@@ -176,9 +176,9 @@ Qini coefficient就是Qini curve与baseline之间的面积比上best model curve
 
 $$ Q_\pi(k) = \sum_{i=1}^k (R^T_\pi(i) - R^C_\pi(i)\frac{N^T_\pi(i)}{N^C_\pi(i)} ) - \frac{k}{2}( \overline{R}^T(k) - \overline{R}^C(k)) $$
 
-$$ Q_\pi(k) = \frac{\int Q_\pi(\rho ) {\rm d}\rho}{\int Q^*_\pi(\rho ) {\rm d}\rho} $$ 
+$$ Qini \,\ Coefficient = \frac{\int Q_\pi(\rho ) {\rm d}\rho}{\int Q^*_\pi(\rho ) {\rm d}\rho} $$ 
 
-$$ {\int Q^*_\pi(\rho ) {\rm d}\rho}代表best model算出来的面积 $$
+$$ {\int Q^*_\pi(\rho ) {\rm d}\rho}代表best \,\ model算出来的面积 $$
 
 
 参考：
