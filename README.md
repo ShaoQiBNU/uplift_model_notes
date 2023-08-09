@@ -133,7 +133,7 @@ TODO y轴值含义不对？
 
 ![image](https://github.com/ShaoQiBNU/uplift_model_notes/blob/main/imgs/2.jpg)
 
-这里baseline直观解释就是：任意取 $k$ 个样本，treatment组中 $Y=1$ 的个数减去control组中 $Y=1$ 的个数。比方说一共20个样本，treatment组10个，control组10个，其中treatment组中 $Y=1$ 的8个，control组中 $Y=1$ 的5个，则baseline的纵轴值就是 $8 - 5 = 3$，所以baseline就是一条斜率为 $0.15$ 的直线。
+这里baseline直观解释就是：任意取 $k$ 个样本，treatment组中 $Y=1$ 的个数减去control组中 $Y=1$ 的个数。比方说一共20个样本，treatment组10个，control组10个，其中treatment组中 $Y=1$ 的8个，control组中 $Y=1$ 的5个，则baseline的纵轴值就是 $8 - 5 = 3$，所以baseline就是一条斜率为 $3/20 = 0.15$ 的直线。
 
 这里uplift curve直观解释就是uplift最大的前 $k$ 个样本里treatment组中 $Y=1$ 的个数减去control组中 $Y=1$ 的个数，所以这个曲线最后一定会和baseline交汇，因为在全部样本下，uplift curve和baseline的计算结果必定相等。
 
@@ -150,13 +150,35 @@ $$ AUUC = \int_{0}^{1} AUUC_\pi(\rho ) {\rm d}\rho $$
 
 4. Qini curve
 
+![image](https://github.com/ShaoQiBNU/uplift_model_notes/blob/main/imgs/3.jpg)
 
+横轴与uplift curve相同，纵轴的含义是cumulative number of uplift。这里主要说一下best model这条线，这条曲线表示理论上最优模型画出来的线。为了解释这个模型，假设样本集有4种情况：
 
+Y=1|T=1 
+
+Y=0|T=1 
+
+Y=1|T=0 
+
+Y=0|T=0
+
+最优模型对这4种情况赋予的uplift值有如下的排序：Y=1|T=1的样本一定排在最前面；Y=1|T=0的样本一定排在最后，因为这种人代表了一个negative effect，即“反人类”，给券和购买的行为反着来；其次是 Y=0|T=1 和 Y=0|T=0。
+
+这个曲线首先肯定会是一条斜率为1的曲线，为什么呢？理论上最好的模型会把真正uplift最大（最有可能转化）的样本放前面（预测出来uplift也最大），所以曲线会先计算Y=1|T=1这些样本。然后把这些样本计算完之后，都是Y=0|T=1和Y=0|T=0的样本，这时候对整体的的cumulative uplift没有影响，所以会是一条直线不变。但是到了Y=0|T=1和Y=0|T=0这些样本消化完后，会轮到Y=1|T=0，这些就会对cumulative uplift产生负影响，所以会是一条斜率为-1的直线下降，直到回归baseline的终点。
+
+uplift curve的纵轴是 $R^T_\pi(k) - R^C_\pi(k)$ ，这里只考虑了个数，没有考虑treatment组和control组的本身样本个数。所以Qini curve修正了这个数字，用一个样本比例即treatment组和control组的比例来修正，这样更加公平。
+
+$$ R^T_\pi(k) - R^C_\pi(k)\frac{N^T_\pi(k)}{N^C_\pi(k)} $$
 
 5. Qini Coefficient
 
+Qini coefficient就是Qini curve与baseline之间的面积比上best model curve与baseline之间的面积。越大越好。具体公式如下：
 
+$$ Q_\pi(k) = \sum_{i=1}^k (R^T_\pi(i) - R^C_\pi(i)\frac{N^T_\pi(i)}{N^C_\pi(i)} ) - \frac{k}{2}( \overline{R}^T(k) - \overline{R}^C(k)) $$
 
+$$ Q_\pi(k) = \frac{\int Q_\pi(\rho ) {\rm d}\rho}{\int Q^*_\pi(\rho ) {\rm d}\rho} $$ 
+
+$$ {\int Q^*_\pi(\rho ) {\rm d}\rho}代表best model算出来的面积 $$
 
 
 参考：
