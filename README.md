@@ -195,20 +195,38 @@ https://github.com/maks-sh/scikit-uplift/tree/master
 
 ## 业界应用
 
-> 业界应用时会先做小流量探索实验收集训练样本，用于uplift model的建模
+> 业界应用时会先做小流量探索实验收集训练样本，用于uplift model的建模。根据业务特性和uplift model的结果上线策略调整实验。
 
-> 根据业务特性和uplift model的结果上线策略调整实验。其中，优惠券发放涉及到成本预算和roi的问题，因此在求解uplift model之后，还需要做运筹优化求解，在成本和roi限制下，寻找最优解(决定用户发面额多少的优惠券)。
+### 求uplift增益，确定业务激励或营销程度的调整策略
 
-### Push 
-
-#### 腾讯
+#### 腾讯Push
 https://zhuanlan.zhihu.com/p/451884908
 
-#### 快手
+
+#### 快手Push
 用uplift建模用户DAU增益价值，control组，不发Push；treatment组，发Push；优化目标：是否DAU，二分类
 
 
-### 优惠券
+#### 抖音金币增发
+> 用uplift建模用户在增发金币的增益价值(LT、LTV和duration)，control组，大盘金币系数；treatment组，大盘金币系数+0.3(随机写的)；优化目标：LT、LTV和duration。
+
+> 如果需求是金币减发，则control组，大盘金币系数；treatment组，大盘金币系数-0.3(随机写的)；优化目标：LT、LTV和duration。
+
+> 线上实验时，根据uplift score选择k%的用户做金币增发或者减发，查看实验指标。
+
+
+#### 抖音广告个性化adload(adload：推送广告占比)
+> 用uplift建模用户在降低adload的LTV/duration/留存等增益价值，control组，大盘金adload系数；treatment组，大盘adload系数-0.3(随机写的)；优化目标：LTV。
+
+> 线上实验时，根据uplift score选择k%的用户做adload调整，查看实验指标。
+
+**由于降低adload或金币减发会导致LTV的uplift score是负值，因此uplift curve是向下弯曲的，AUUC小于0.5**
+
+
+### 优惠券个性化发放
+
+> 优惠券发放涉及到成本预算和roi的问题，因此在求解uplift model之后，还需要做运筹优化求解，在成本和roi限制下，寻找最优解(决定用户发面额多少的优惠券)。在拉新场景下，所有用户都会发放优惠券，不存在control组，全部是treatment组，此时对uplift model的评估可以采用这种方式：激励最低的组作为control组，求其余组对该组的Qini Coefficient和AUUC等。
+
 
 #### 字节千人千券
 
@@ -338,21 +356,7 @@ $$ B_{T} = B_{T-1} + E_{T} B_{target} $$
 $$ B_{0} = B_{target} $$
 
 
-#### 抖音金币增发
-> 用uplift建模用户在增发金币的增益价值(LT、LTV和duration)，control组，大盘金币系数；treatment组，大盘金币系数+0.3(随机写的)；优化目标：LT、LTV和duration。
 
-> 如果需求是金币减发，则control组，大盘金币系数；treatment组，大盘金币系数-0.3(随机写的)；优化目标：LT、LTV和duration。
-
-> 线上实验时，根据uplift score选择k%的用户做金币增发或者减发，查看实验指标。
-
-#### 抖音广告个性化adload(adload：推送广告占比)
-> 用uplift建模用户在降低adload的LTV/duration/留存等增益价值，control组，大盘金adload系数；treatment组，大盘adload系数-0.3(随机写的)；优化目标：LTV。
-
-> 线上实验时，根据uplift score选择k%的用户做adload调整，查看实验指标。
-
-**由于降低adload或金币减发会导致LTV的uplift score是负值，因此uplift curve是向下弯曲的，AUUC小于0.5**
-
-待补充
 
 
 
