@@ -122,7 +122,6 @@ e. 计算完每个segment的 $u_{kp}$ 和 $u_{ka}$ 就可以作图了
 
 最大的predicted uplift（最左那根柱子）和最小的predicted uplift（最右那根柱子），差距是否足够大。为什么要衡量这个呢？假设我们有一个模型，预测出来每个样本的uplift都是一样的，即使这个模型平均来看是比较准的，但是没有实际意义，因为我们实际上必须要求模型能够区分出uplift较大和较小的两群人，不然我们怎么发券？怎么投放？所以这里就要求模型能够在uplift上预测出足够的区分度。
 
-
 此方法很难量化，毕竟是看图说话，方法之间有什么可能很难分出孰优孰劣，更多就是一个insight上的考量，去感觉这个模型靠不靠谱。不过这个方法其实已经可以比较全面的帮助我们去评判一个模型了。并且在实际应用时，Range of Predictions其实非常重要，因为我们往往并不要求全局精准，反倒是如果可以能够对最头部的segment预测准，就足以帮助我们对最大的uplift组进行投放了。
 
 2. uplift curve 
@@ -133,10 +132,6 @@ $$ f(k) = (\frac{R^T_\pi(k)}{N^T_\pi(k)} - \frac{R^C_\pi(k)}{N^C_\pi(k)})(N^T_\p
 - step2：取topK个样本，统计得到 $f(k)$ ，以 $k$ 为横轴，以 $f(k)$ 为纵轴，画出Uplift Curve。如图所示：
 
 ![image](https://github.com/ShaoQiBNU/uplift_model_notes/blob/main/imgs/2.jpg)
-
-这里baseline直观解释就是：任意取 $k$ 个样本，treatment组 $Y=1$ 的比例减去control组 $Y=1$ 的比例 * (treatment组样本数 + control组样本数)。比方说一共20个样本，treatment组10个，control组10个，其中treatment组中 $Y=1$ 的8个，control组中 $Y=1$ 的5个，则baseline的纵轴值就是 $(8/10 - 5/10)*(10+10) = 6$，所以baseline就是一条斜率为 $6/20 = 0.3$ 的直线。
-
-这里uplift curve最后一定会和baseline交汇，因为在全部样本下，uplift curve和baseline的计算结果必定相等。
 
 我们希望在 $k$ 越小的地方，treatment组中 $Y=1$ 的比例与control组中 $Y=1$  的比例的差值越大，证明uplift大的样本确实是那些给treatment就更能转化的样本。但这里的差值是一个绝对值的差，这并不合理，如果本身这个测试集treatment组的数量就显著的小于control组，那就算这个uplift模型再好，这个差值可能都是负的，所以这个怎么解决后面一个方法会讲到。
 
@@ -151,22 +146,6 @@ $$ AUUC = \int_{0}^{1} AUUC_\pi(\rho ) {\rm d}\rho $$
 
 4. Qini curve
 
-![image](https://github.com/ShaoQiBNU/uplift_model_notes/blob/main/imgs/3.jpg)
-
-横轴与uplift curve相同，纵轴的含义是cumulative number of uplift。这里主要说一下best model这条线，这条曲线表示理论上最优模型画出来的线。为了解释这个模型，假设样本集有4种情况：
-
-Y=1|T=1 
-
-Y=0|T=1 
-
-Y=0|T=0
-
-Y=1|T=0 
-
-最优模型对这4种情况赋予的uplift值有如下的排序：Y=1|T=1的样本一定排在最前面；Y=1|T=0的样本一定排在最后，因为这种人代表了一个negative effect，即“反人类”，给券和购买的行为反着来；其次是 Y=0|T=1 和 Y=0|T=0。
-
-这个曲线首先肯定会是一条斜率为1的曲线，为什么呢？理论上最好的模型会把真正uplift最大（最有可能转化）的样本放前面（预测出来uplift也最大），所以曲线会先计算Y=1|T=1这些样本。然后把这些样本计算完之后，都是Y=0|T=1和Y=0|T=0的样本，这时候对整体的的cumulative uplift没有影响，所以会是一条直线不变。但是到了Y=0|T=1和Y=0|T=0这些样本消化完后，会轮到Y=1|T=0，这些就会对cumulative uplift产生负影响，所以会是一条斜率为-1的直线下降，直到回归baseline的终点。
-
 当 treatment 组和 control 组的 样本数量（在topK样本里）相差比较大的时候，Uplift Curve的计算可能会存在一些问题。为此 Radcliffe 提出 Qini curve ，把提升缩放treatment组的样本规模上，用一个样本比例即treatment组和control组的比例来修正，这样更加公平。
 
 $$ g(k) = R^T_\pi(k) - R^C_\pi(k)\frac{N^T_\pi(k)}{N^C_\pi(k)} $$
@@ -176,18 +155,70 @@ $$ g(k) = R^T_\pi(k) - R^C_\pi(k)\frac{N^T_\pi(k)}{N^C_\pi(k)} $$
 
 $$ f(k) = \frac{g(k)(N^T_\pi(k) + N^C_\pi(k))}{N^T_\pi(k)} $$
 
+![image](https://github.com/ShaoQiBNU/uplift_model_notes/blob/main/imgs/3.jpg)
+
 
 5. Qini Coefficient
 
 Qini coefficient就是Qini curve与baseline之间的面积比上best model curve与baseline之间的面积。越大越好。具体公式如下：
 
-$$ Q_\pi(k) = \sum_{i=1}^k (R^T_\pi(i) - R^C_\pi(i)\frac{N^T_\pi(i)}{N^C_\pi(i)} ) - \frac{k}{2}( \overline{R}^T(k) - \overline{R}^C(k)\frac{N^T_\pi(k)}{N^C_\pi(k)}) $$
+$$ Q_\pi(k) = \sum_{i=1}^k (R^T_\pi(i) - R^C_\pi(i)\frac{N^T_\pi(i)}{N^C_\pi(i)}) - \frac{k}{2}( \overline{R}^T(k) - \overline{R}^C(k)\frac{N^T_\pi(k)}{N^C_\pi(k)}) $$
 
 $$ Qini \; Coefficient = \frac{\int Q_\pi(\rho ) {\rm d}\rho}{\int Q^*_\pi(\rho ) {\rm d}\rho} $$ 
 
 $$ {\int Q^*_\pi(\rho ) {\rm d}\rho}代表best \; model算出来的面积 $$
 
 Qini Curve在实际情况中通常会比Uplift Curve更好，主要是因为Qini Curve可以处理treatment 组和contorl 组样本数量差异大的情况，具有稳定性，所以 Qini coefficient 会比AUUC 更实用一些。
+
+
+6. 图像解释
+
+在uplift curve和Qini curve的图像里，均有best model和baseline两条线，两种算法下，两条线的形状也有差异。这里重点解释一下，假设样本集有4种情况：
+
+Y=1|T=1 
+
+Y=0|T=1 
+
+Y=0|T=0
+
+Y=1|T=0 
+
+https://github.com/ShaoQiBNU/uplift_model_notes/blob/main/uplift%E6%A8%A1%E5%9E%8B%E5%BB%BA%E6%A8%A1%E4%B8%8E%E8%AF%84%E4%BC%B0.ipynb
+里的测试集具体统计如下：
+
+|  转化   | treatment | control  | 总计  |
+|  ----   | ---- | ---- | ---- |
+| Y = 1  | 1640 | 1118 |  2758 | 
+| Y = 0  | 9113 | 9476 |  18589 | 
+| 总计    | 10753  | 10594 | 21347 |
+
+- baseline
+
+baseline直观解释就是：任意取 $k$ 个样本，计算对应的 $f(k)$ 和 $g(k)$ 。uplift curve和Qini curve最后一定会和baseline交汇，因为在全部样本下，uplift curve与Qini curve和baseline的计算结果必定相等，如下所示：
+
+|    | 横轴值x | 纵轴值y | 斜率k | 
+|  ----   | ---- | ---- | ---- |
+| uplift curve  | $x \in [0, 21347]$ | $y = (\frac{1640}{10753} - \frac{1118}{10594}) * (10753 + 10594) = 1002.9705 $ | $ k = \frac{1002.9705}{10753 + 10594} = 0.04698 $
+| Qini curve  | $x \in [0, 21347]$ | $y = 1640 - 1118 * \frac{10753}{10594} = 505.2205$ | $k = \frac{505.2205}{10753 + 10594} = 0.023667 $ 
+
+
+- best model
+最优模型对这4种情况赋予的uplift值有如下的排序：Y=1|T=1的样本一定排在最前面；Y=1|T=0的样本一定排在最后，因为这种人代表了一个negative effect，即“反人类”，给券和购买的行为反着来；其次是 Y=0|T=0 和 Y=0|T=1。
+
+这个曲线首先肯定会是一条斜率为1的曲线，为什么呢？理论上最好的模型会把真正uplift最大（最有可能转化）的样本放前面（预测出来uplift也最大），所以曲线会先计算Y=1|T=1这些样本。然后把这些样本计算完之后，都是Y=0|T=1和Y=0|T=0的样本，这时候对整体的的cumulative uplift没有影响，所以会是一条直线不变。但是到了Y=0|T=1和Y=0|T=0这些样本消化完后，会轮到Y=1|T=0，这些就会对cumulative uplift产生负影响，所以会是一条斜率为负值的直线下降，直到回归baseline的终点。
+
+
+|  样本 |  metric  | 横轴值x | 纵轴值y | 斜率k | 
+|  ----   |  ----   | ---- | ---- | ---- |
+| Y=1, T=1  | uplift curve  | $x \in [0, 1640]$ | $y = (\frac{1640}{1640} - \frac{0}{0}) * (1640 + 0) = 1640 $ | $ k = \frac{1640}{1640} = 1 $
+| Y=1, T=1  | Qini curve  | $x \in [0, 1640]$ | $y = 1640 - 0 * \frac{1640}{0} = 1640$ | $k = \frac{1640}{1640} = 1 $ | 
+| Y=0, T=0  | uplift curve  | $x \in [1640, 1640+9476]$ | $y = (\frac{1640}{1640} - \frac{0}{9476}) * (1640 + 9476) = 11116 $ | $ k = \frac{11116-1640}{11116-1640} = 1 $ | 
+| Y=0, T=0  | Qini curve  | $x \in [1640, 1640+9476]$ | $y = 1640 - 0 * \frac{1640}{9476} = 1640$ | $k = \frac{1640-1640}{11116-1640} = 0 $ | 
+| Y=0, T=1  | uplift curve  | $x \in [1640+9476, 1640+9476+9113]$ | $y = (\frac{1640}{1640+9113} - \frac{0}{9476}) * (1640 + 9476 + 9113) = 3085.2376 $ | $k = \frac{3085.2376 - 11116}{9113} = -0.8812$ |
+| Y=0, T=1  | Qini curve  | $x \in [1640+9476, 1640+9476+9113]$ | $y = 1640 - 0 * \frac{1640+9113}{9476} = 1640$ | $k = 0 $ |
+| Y=1, T=0  | uplift curve  | $x \in [1640+9476+9113, 1640+9476+9113+1118]$ | $y = (\frac{1640}{1640+9113} - \frac{1118}{1118+9476}) * (1640+9476+9113+1118) = 1002.9705 $ | $ k = \frac{1002.9705 - 3085.2376}{1118} = -1.8624 $ |
+| Y=1, T=0  | Qini curve  | $x \in [1640+9476+9113, 1640+9476+9113+1118]$ | $y = 1640 - 1118 * \frac{1640+9113}{9476+1118} = 505.2205 $ | $k = (505.2205 - 1640)/ 1118 = -1.01500 $ |
+
 
 参考：
 
