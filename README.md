@@ -127,24 +127,25 @@ e. 计算完每个segment的 $u_{kp}$ 和 $u_{ka}$ 就可以作图了
 
 2. uplift curve 
 
-横轴表示 topK 的样本，纵轴是这些样本中的treatment组中 $Y=1$ 的个数减去control组中 $Y=1$ 的个数。按照上述提到的序 $\pi(k)$ 即把uplift降序排列，这条曲线 (uplift curve) 的纵轴就是 $R^T_\pi(k) - R^C_\pi(k)$ 。这条曲线 (baseline) 的纵轴就是 $\overline{R}^T(k) - \overline{R}^C(k)$ 如图所示：
+$$ f(k) = (\frac{R^T_\pi(k)}{N^T_\pi(k)} - \frac{R^C_\pi(k)}{N^C_\pi(k)})(N^T_\pi(k) + N^C_\pi(k)) $$
 
-TODO y轴值含义不对？
+- step1：按照上述提到的序 $\pi(k)$ 即把uplift降序排列
+- step2：取topK个样本，统计得到 $f(k)$ ，以 $k$ 为横轴，以 $f(k)$ 为纵轴，画出Uplift Curve。如图所示：
 
 ![image](https://github.com/ShaoQiBNU/uplift_model_notes/blob/main/imgs/2.jpg)
 
-这里baseline直观解释就是：任意取 $k$ 个样本，treatment组中 $Y=1$ 的个数减去control组中 $Y=1$ 的个数。比方说一共20个样本，treatment组10个，control组10个，其中treatment组中 $Y=1$ 的8个，control组中 $Y=1$ 的5个，则baseline的纵轴值就是 $8 - 5 = 3$，所以baseline就是一条斜率为 $3/20 = 0.15$ 的直线。
+这里baseline直观解释就是：任意取 $k$ 个样本，treatment组 $Y=1$ 的比例减去control组 $Y=1$ 的比例 * (treatment组样本数 + control组样本数)。比方说一共20个样本，treatment组10个，control组10个，其中treatment组中 $Y=1$ 的8个，control组中 $Y=1$ 的5个，则baseline的纵轴值就是 $(8/10 - 5/10)*(10+10) = 6$，所以baseline就是一条斜率为 $6/20 = 0.3$ 的直线。
 
-这里uplift curve直观解释就是uplift最大的前 $k$ 个样本里treatment组中 $Y=1$ 的个数减去control组中 $Y=1$ 的个数，所以这个曲线最后一定会和baseline交汇，因为在全部样本下，uplift curve和baseline的计算结果必定相等。
+这里uplift curve最后一定会和baseline交汇，因为在全部样本下，uplift curve和baseline的计算结果必定相等。
 
-我们希望在 $k$ 越小的地方，treatment组中 $Y=1$ 的个数与control组中 $Y=1$  的个数的差值越大，证明uplift大的样本确实是那些给treatment就更能转化的样本。但这里的差值是一个绝对值的差，这并不合理，如果本身这个测试集treatment组的数量就显著的小于control组，那就算这个uplift模型再好，这个差值可能都是负的，所以这个怎么解决后面一个方法会讲到。
+我们希望在 $k$ 越小的地方，treatment组中 $Y=1$ 的比例与control组中 $Y=1$  的比例的差值越大，证明uplift大的样本确实是那些给treatment就更能转化的样本。但这里的差值是一个绝对值的差，这并不合理，如果本身这个测试集treatment组的数量就显著的小于control组，那就算这个uplift模型再好，这个差值可能都是负的，所以这个怎么解决后面一个方法会讲到。
 
 
 3. AUUC
 
 AUUC就是uplift curve和baseline两条线中间的面积，越大越好。明细公式如下：
 
-$$ AUUC_\pi(k) = \sum_{i=1}^k (R^T_\pi(i) - R^C_\pi(i)) - \frac{k}{2}( \overline{R}^T(k) - \overline{R}^C(k)) $$
+$$ AUUC_\pi(k) = \sum_{i=1}^k (\frac{R^T_\pi(i)}{N^T_\pi(i)} - \frac{R^C_\pi(i)}{N^C_\pi(i)})(N^T_\pi(i) + N^C_\pi(i)) - \frac{k}{2}(\frac{\overline{R}^T(k)}{N^T_\pi(k)} - \frac{\overline{R}^C(k)}{N^C_\pi(k)})(N^T_\pi(k) + N^C_\pi(k)) $$
 
 $$ AUUC = \int_{0}^{1} AUUC_\pi(\rho ) {\rm d}\rho $$
 
@@ -166,22 +167,31 @@ Y=1|T=0
 
 这个曲线首先肯定会是一条斜率为1的曲线，为什么呢？理论上最好的模型会把真正uplift最大（最有可能转化）的样本放前面（预测出来uplift也最大），所以曲线会先计算Y=1|T=1这些样本。然后把这些样本计算完之后，都是Y=0|T=1和Y=0|T=0的样本，这时候对整体的的cumulative uplift没有影响，所以会是一条直线不变。但是到了Y=0|T=1和Y=0|T=0这些样本消化完后，会轮到Y=1|T=0，这些就会对cumulative uplift产生负影响，所以会是一条斜率为-1的直线下降，直到回归baseline的终点。
 
-uplift curve的纵轴是 $R^T_\pi(k) - R^C_\pi(k)$ ，这里只考虑了个数，没有考虑treatment组和control组的本身样本个数。所以Qini curve修正了这个数字，用一个样本比例即treatment组和control组的比例来修正，这样更加公平。
+当 treatment 组和 control 组的 样本数量（在topK样本里）相差比较大的时候，Uplift Curve的计算可能会存在一些问题。为此 Radcliffe 提出 Qini curve ，把提升缩放treatment组的样本规模上，用一个样本比例即treatment组和control组的比例来修正，这样更加公平。
 
-$$ R^T_\pi(k) - R^C_\pi(k)\frac{N^T_\pi(k)}{N^C_\pi(k)} $$
+$$ g(k) = R^T_\pi(k) - R^C_\pi(k)\frac{N^T_\pi(k)}{N^C_\pi(k)} $$
+
+
+不难发现， Qini Curve 与Uplift Curve的关系如下：
+
+$$ f(k) = \frac{g(k)(N^T_\pi(k) + N^C_\pi(k))}{N^T_\pi(k)} $$
+
 
 5. Qini Coefficient
 
 Qini coefficient就是Qini curve与baseline之间的面积比上best model curve与baseline之间的面积。越大越好。具体公式如下：
 
-$$ Q_\pi(k) = \sum_{i=1}^k (R^T_\pi(i) - R^C_\pi(i)\frac{N^T_\pi(i)}{N^C_\pi(i)} ) - \frac{k}{2}( \overline{R}^T(k) - \overline{R}^C(k)) $$
+$$ Q_\pi(k) = \sum_{i=1}^k (R^T_\pi(i) - R^C_\pi(i)\frac{N^T_\pi(i)}{N^C_\pi(i)} ) - \frac{k}{2}( \overline{R}^T(k) - \overline{R}^C(k)\frac{N^T_\pi(k)}{N^C_\pi(k)}) $$
 
 $$ Qini \; Coefficient = \frac{\int Q_\pi(\rho ) {\rm d}\rho}{\int Q^*_\pi(\rho ) {\rm d}\rho} $$ 
 
 $$ {\int Q^*_\pi(\rho ) {\rm d}\rho}代表best \; model算出来的面积 $$
 
+Qini Curve在实际情况中通常会比Uplift Curve更好，主要是因为Qini Curve可以处理treatment 组和contorl 组样本数量差异大的情况，具有稳定性，所以 Qini coefficient 会比AUUC 更实用一些。
 
 参考：
+
+https://mp.weixin.qq.com/s/j1QXJjWTWfd7nurqLJ3lGg
 
 https://zhuanlan.zhihu.com/p/399322196
 
