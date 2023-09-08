@@ -274,6 +274,33 @@ https://zhuanlan.zhihu.com/p/451884908
 
 #### 字节千人千券
 
+**相关变量及含义**
+|  字段名 | 含义  | 应用
+|  ----  | ---- | ---- |
+| user_id  | 用户id |  |
+| coupon_id | 优惠券id |  |
+| coupon_reduce | 优惠券的赠款，即 $c_{j}$ | 预算约束 |
+| coupon_threshold | 优惠券的门槛，即 $t_{j}$ | 消耗约束 |
+| is_convert | 用户在优惠券id下的转化概率，即 $v_{j}$ | 求解目标 |
+| control_convert | control下的转化概率，即用户自然转化率 $v_{0}$
+| is_convert_uplift | 用户在优惠券id的转化概率增益，即 $v_{j} - v_{0}$ | 求解目标 |
+| expected_LTV | 用户期望LTV，即 $v_{j} * LTV$ | 求解目标 |
+| expected_LTV_uplift | 用户期望LTV增益，即 $(v_{j} - v_{0}) * LTV$ | 求解目标 |
+| expected_reduce | $v_{j} * c_{j}$ | 预算约束 |
+| expected_threshold | $v_{j} * t_{j}$ |  消耗约束 |
+| expected_threshold_uplift | $(v_{j} - v_{0}) * t_{j}$ |  消耗约束 |
+
+
+**对于预算约束、消耗约束和求解目标，可以根据实际业务进行组合，求解公式如表所示：**
+
+|  求解目标 |  预算约束   | 消耗约束  | 求解公式  |
+|  ----    |  ----  | ----  | ---- |
+| $v_{j}$ | $c_{j}$ | $t_{j}$ | $$\arg \max_{j} {v_{ij}-\lambda_Bc_j+\lambda_Ct_j}$$
+| $v_{j}$ | $c_{j}$ | $(v_{j} - v_{0}) * t_{j}$ | $$\arg \max_{j} {v_{ij}-\lambda_Bc_j+\lambda_C(v_{ij}-v_{i0})t_j}$$
+| $v_{j}$ | $v_{j} * c_{j}$ | $t_{j}$ | $$\arg \max_{j} {v_{ij}-\lambda_Bv_{ij}c_j+\lambda_Ct_j}$$
+| $v_{j}$ | $v_{j} * c_{j}$ | $(v_{j} - v_{0}) * t_{j}$ | $$\arg \max_{j} {v_{ij}-\lambda_Bv_{ij}c_j+\lambda_C(v_{ij}-v_{i0})t_j}$$
+
+
 > 总预算为 $B$，消耗约束为 $C$，则 $ROI = \frac{C}{B}$,  $v_{i,j}$ 为第 $i$ 个用户使用第 $j$ 张优惠券的转化概率,  $v_{i,0}$ 为第 $i$ 个用户的自然转化概率,  $x_{i,j}$ 为第 $i$ 个用户是否使用第 $j$ 张优惠券,  $c_{j}$ 为第 $j$ 张优惠券的增款,  $t_{j}$ 为第 $j$ 张优惠券的门槛，则优惠券的分配问题可以转化为如下的**整数规划问题**：
 
 $$ \max \sum_{i=1}^{M} \sum_{j=1}^{N} v_{i,j}x_{i,j} $$
@@ -324,24 +351,6 @@ $$\arg \max_{j} {v_{ij}-\lambda_Bc_j+\lambda_C(v_{ij}-v_{i0})t_j}$$
 **优惠券一般为灌发形式，直接灌发到用户的账户里，曝光预算等同于发放预算，约束为发放预算；而充赠红包，需要用户充值后再发放红包，曝光预算高于发放预算，但约束是发放预算，因此相应的约束公式变为：**
 
 $$ s.t. \sum_{i=1}^{M}\sum_{j=1}^{N} c_{j}v_{ij}x_{i,j} \leq B $$
-
-**对于消耗约束 $C$，有的场景限制为uplift下的消耗，有的场景限制为普通消耗，汇总两者总结下来，如表所示：**
-
-|  字段名称   | 字段含义  | 消耗  |
-|  ----  | ----  | ---- |
-| expected_coupon_reduce | coupon_reduce | $B$
-| expected_coupon_convert_reduce | is_convert * coupon_reduce | $B$
-| expected_coupon_threshold | is_convert * coupon_threshold | $C$
-| expected_coupon_threshold_uplift | (is_convert - control_convert) * coupon_threshold | $C$
-
-**针对 $B$ 和 $C$ 的所有组合情况，求解公式如表所示：**
-
-|  预算约束   | 消耗约束  | 求解公式  |
-|  ----  | ----  | ---- |
-| expected_coupon_reduce | expected_coupon_threshold | $$\arg \max_{j} {v_{ij}-\lambda_Bc_j+\lambda_Ct_j}$$
-|expected_coupon_reduce | expected_coupon_threshold_uplift | $$\arg \max_{j} {v_{ij}-\lambda_Bc_j+\lambda_C(v_{ij}-v_{i0})t_j}$$
-| expected_coupon_convert_reduce | expected_coupon_threshold | $$\arg \max_{j} {v_{ij}-\lambda_Bv_{ij}c_j+\lambda_Ct_j}$$
-| expected_coupon_convert_reduce | expected_coupon_threshold_uplift | $$\arg \max_{j} {v_{ij}-\lambda_Bv_{ij}c_j+\lambda_C(v_{ij}-v_{i0})t_j}$$
 
 **pyspark实现代码**
 
