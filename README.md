@@ -291,16 +291,7 @@ https://zhuanlan.zhihu.com/p/451884908
 | expected_threshold_uplift | $(v_{j} - v_{0}) * t_{j}$ |  消耗约束 |
 
 
-**对于预算约束、消耗约束和求解目标，可以根据实际业务进行组合，求解公式如表所示：**
-
-|  求解目标 |  预算约束   | 消耗约束  | 求解公式  |
-|  ----    |  ----  | ----  | ---- |
-| $v_{j}$ | $c_{j}$ | $t_{j}$ | $$\arg \max_{j} {v_{ij}-\lambda_Bc_j+\lambda_Ct_j}$$
-| $v_{j}$ | $c_{j}$ | $(v_{j} - v_{0}) * t_{j}$ | $$\arg \max_{j} {v_{ij}-\lambda_Bc_j+\lambda_C(v_{ij}-v_{i0})t_j}$$
-| $v_{j}$ | $v_{j} * c_{j}$ | $t_{j}$ | $$\arg \max_{j} {v_{ij}-\lambda_Bv_{ij}c_j+\lambda_Ct_j}$$
-| $v_{j}$ | $v_{j} * c_{j}$ | $(v_{j} - v_{0}) * t_{j}$ | $$\arg \max_{j} {v_{ij}-\lambda_Bv_{ij}c_j+\lambda_C(v_{ij}-v_{i0})t_j}$$
-
-
+**举例来说：**
 > 总预算为 $B$，消耗约束为 $C$，则 $ROI = \frac{C}{B}$,  $v_{i,j}$ 为第 $i$ 个用户使用第 $j$ 张优惠券的转化概率,  $v_{i,0}$ 为第 $i$ 个用户的自然转化概率,  $x_{i,j}$ 为第 $i$ 个用户是否使用第 $j$ 张优惠券,  $c_{j}$ 为第 $j$ 张优惠券的增款,  $t_{j}$ 为第 $j$ 张优惠券的门槛，则优惠券的分配问题可以转化为如下的**整数规划问题**：
 
 $$ \max \sum_{i=1}^{M} \sum_{j=1}^{N} v_{i,j}x_{i,j} $$
@@ -351,6 +342,17 @@ $$\arg \max_{j} {v_{ij}-\lambda_Bc_j+\lambda_C(v_{ij}-v_{i0})t_j}$$
 **优惠券一般为灌发形式，直接灌发到用户的账户里，曝光预算等同于发放预算，约束为发放预算；而充赠红包，需要用户充值后再发放红包，曝光预算高于发放预算，但约束是发放预算，因此相应的约束公式变为：**
 
 $$ s.t. \sum_{i=1}^{M}\sum_{j=1}^{N} c_{j}v_{ij}x_{i,j} \leq B $$
+
+
+**对于预算约束、消耗约束和求解目标，可以根据实际业务进行组合，求解公式如表所示：**
+
+|  求解目标 |  预算约束   | 消耗约束  | 求解公式  |
+|  ----    |  ----  | ----  | ---- |
+| $v_{j}$ | $c_{j}$ | $t_{j}$ | $$\arg \max_{j} {v_{ij}-\lambda_Bc_j+\lambda_Ct_j}$$
+| $v_{j}$ | $c_{j}$ | $(v_{j} - v_{0}) * t_{j}$ | $$\arg \max_{j} {v_{ij}-\lambda_Bc_j+\lambda_C(v_{ij}-v_{i0})t_j}$$
+| $v_{j}$ | $v_{j} * c_{j}$ | $t_{j}$ | $$\arg \max_{j} {v_{ij}-\lambda_Bv_{ij}c_j+\lambda_Ct_j}$$
+| $v_{j}$ | $v_{j} * c_{j}$ | $(v_{j} - v_{0}) * t_{j}$ | $$\arg \max_{j} {v_{ij}-\lambda_Bv_{ij}c_j+\lambda_C(v_{ij}-v_{i0})t_j}$$
+
 
 **pyspark实现代码**
 
