@@ -298,9 +298,10 @@ https://zhuanlan.zhihu.com/p/451884908
 
 $$ \max \sum_{i=1}^{M} \sum_{j=0}^{N} (v_{i,j} - v_{i,0}) x_{i,j} = \max \left \lbrace \sum_{i=1}^{M} \sum_{j=0}^{N} (v_{i,j} x_{i,j}  - v_{i,0} x_{i,j}) \right \rbrace $$ 
 
-$$ = \max \left \lbrace \sum_{i=1}^{M} \sum_{j=0}^{N} v_{i,j} x_{i,j}  - \sum_{i=1}^{M} \sum_{j=0}^{N}  v_{i,0} x_{i,j} \right \rbrace = \max \left \lbrace \sum_{i=1}^{M} \sum_{j=0}^{N} v_{i,j} x_{i,j}  - \sum_{i=1}^{M} v_{i,0} \sum_{j=0}^{N} x_{i,j} \right \rbrace = \max \left \lbrace \sum_{i=1}^{M} \sum_{j=0}^{N} v_{i,j} x_{i,j} - \sum_{i=1}^{M} v_{i,0} \right $$ 
+$$ = \max \left \lbrace \sum_{i=1}^{M} \sum_{j=0}^{N} v_{i,j} x_{i,j}  - \sum_{i=1}^{M} \sum_{j=0}^{N}  v_{i,0} x_{i,j} \right \rbrace = \max \left \lbrace \sum_{i=1}^{M} \sum_{j=0}^{N} v_{i,j} x_{i,j}  - \sum_{i=1}^{M} v_{i,0} \sum_{j=0}^{N} x_{i,j} \right \rbrace = \max \left \lbrace \sum_{i=1}^{M} \sum_{j=0}^{N} v_{i,j} x_{i,j} - \sum_{i=1}^{M} v_{i,0} \right \rbrace 
 
-$$ \rbrace \iff \max \left \lbrace \sum_{i=1}^{M} \sum_{j=0}^{N} v_{i,j} x_{i,j} \right \rbrace $$
+
+$$ \iff \max \left \lbrace \sum_{i=1}^{M} \sum_{j=0}^{N} v_{i,j} x_{i,j} \right \rbrace $$
 
 $$ s.t. \sum_{i=1}^{M}\sum_{j=1}^{N} c_{j}x_{i,j} \leq B $$
 
