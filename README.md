@@ -283,9 +283,9 @@ https://zhuanlan.zhihu.com/p/451884908
 | $C$ | 现金消耗 | 消耗约束 |
 | coupon_reduce | 优惠券的赠款，即 $c_{j}$ | 预算约束 |
 | coupon_threshold | 优惠券的门槛，即 $t_{j}$ | 消耗约束 |
-| is_convert | 用户在优惠券id下的转化概率，即 $v_{j}$ | 求解目标，最大化转化概率 |
+| is_convert | 用户在优惠券$j$下的转化概率，即 $v_{j}$ | 求解目标，最大化转化概率 |
 | control_convert | control下的转化概率，即用户自然转化率 $v_{0}$
-| is_convert_uplift | 用户在优惠券id的转化概率增益，即 $v_{j} - v_{0}$ | 求解目标，最大化转化概率增益 |
+| is_convert_uplift | 用户在优惠券$j$的转化概率增益，即 $v_{j} - v_{0}$ | 求解目标，最大化转化概率增益 |
 | expected_LTV | 用户期望LTV，即 $v_{j} * LTV$ | 求解目标，最大化LTV |
 | expected_LTV_uplift | 用户期望LTV增益，即 $(v_{j} - v_{0}) * LTV$ | 求解目标，最大化LTV增益 |
 | expected_reduce | $v_{j} * c_{j}$ | 预算约束 |
@@ -296,27 +296,27 @@ https://zhuanlan.zhihu.com/p/451884908
 **举例来说：**
 > 核销预算为 $B$，消耗约束为 $C$，则 $ROI = \frac{C}{B}$,  $v_{i,j}$ 为第 $i$ 个用户使用第 $j$ 张优惠券的转化概率,  $v_{i,0}$ 为第 $i$ 个用户的自然转化概率,  $x_{i,j}$ 为第 $i$ 个用户是否使用第 $j$ 张优惠券,  $c_{j}$ 为第 $j$ 张优惠券的增款,  $t_{j}$ 为第 $j$ 张优惠券的门槛，则优惠券的分配问题可以转化为如下的**整数规划问题**：
 
-$$ \max \sum_{i=1}^{M} \sum_{j=1}^{N} (v_{i,j} - v_{i,0}) x_{i,j} $$
+$$ \max \sum_{i=1}^{M} \sum_{j=0}^{N} (v_{i,j} - v_{i,0}) x_{i,j} = \max \left\{ \sum_{i=1}^{M} \sum_{j=0}^{N} (v_{i,j} x_{i,j}  - v_{i,0} x_{i,j}) \right\} = \max \left\{\sum_{i=1}^{M} \sum_{j=0}^{N} v_{i,j} x_{i,j}  - \sum_{i=1}^{M} \sum_{j=0}^{N}  v_{i,0} x_{i,j} \right\}=  \max \left\{ \sum_{i=1}^{M} \sum_{j=0}^{N} v_{i,j} x_{i,j}  - \sum_{i=1}^{M} v_{i,0} \sum_{j=0}^{N} x_{i,j} \right\} = \max \left\{ \sum_{i=1}^{M} \sum_{j=0}^{N} v_{i,j} x_{i,j}  - \sum_{i=1}^{M} v_{i,0} \right\} \iff \max \left\{ \sum_{i=1}^{M} \sum_{j=0}^{N} v_{i,j} x_{i,j} \right\} $$
 
 $$ s.t. \sum_{i=1}^{M}\sum_{j=1}^{N} c_{j}x_{i,j} \leq B $$
 
 $$ \sum_{i=1}^{M}\sum_{j=1}^{N} (v_{i,j} - v_{i,0})t_{j}x_{i,j} \geq C $$
 
-$$ \sum_{j=1}^{N} x_{i,j}=1, \forall i $$
+$$ \sum_{j=0}^{N} x_{i,j}=1, \forall i $$
 
 $$ x_{i,j} \geq 0, \forall i,j $$
 
-> 其中 $v_{i,j}$ 和 $v_{i,0}$ 表示用户在treatment组和control组下的转化率，用uplift建模，treatment组，随机发放优惠券(满60减10，满90减20，满98减30)，control组，不发优惠券；优化目标：是否转化，二分类，0代表用户领取优惠券后x天内未转化或未核销该券，1代表用户领取优惠券后x天内转化或核销该券; $M$ 和 $N$ 代表用户数和优惠券个数。
+> 其中 $v_{i,j}$ 和 $v_{i,0}$ 表示用户在treatment组和control组下的转化率，用uplift建模，treatment组:随机发放优惠券(满60减10，满90减20，满98减30)，control组:不发优惠券；优化目标：是否转化，二分类，0代表用户领取优惠券后x天内未转化或未核销该券，1代表用户领取优惠券后x天内转化或核销该券; $M$ 和 $N$ 代表用户数和优惠券个数，$j=0$表示不发券，$j=1...N$代表 $1-N$ 张优惠券。
 
 > **整数规划问题**的求解可以采用拉格朗日乘数法，具体如下：
 
-$$ max L(x,\lambda) = {\max_{x}} {\min_{\lambda_B, \lambda_C}}  \sum_{i=1}^M\sum_{j=1}^N(v_{ij} - v_{i0})x_{ij}+\lambda_B(B-\sum_{i=1}^M\sum_{j=1}^Nc_{j}x_{ij})+\lambda_C(\sum_{i=1}^M\sum_{j=1}^N(v_{ij}-v_{i0})t_{j}x_{ij}-C) $$
+$$ max L(x,\lambda) = {\max_{x}} {\min_{\lambda_B, \lambda_C}}  \sum_{i=1}^M\sum_{j=0}^Nv_{ij}x_{ij}+\lambda_B(B-\sum_{i=1}^M\sum_{j=1}^Nc_{j}x_{ij})+\lambda_C(\sum_{i=1}^M\sum_{j=1}^N(v_{ij}-v_{i0})t_{j}x_{ij}-C) $$
 
 求解算法采用ALS(alternating least squares)进行迭代求解：
 
 1. greedy初始化 $x_{ij}$：
 
-$$ j_i= \arg \max_{j} (v_{ij} - v_{i0}) , x_{ij_i}=1 $$
+$$ j_i= \arg \max_{j} v_{ij} , x_{ij_i}=1 $$
 
 2. 对 $\lambda$ 求最小值，沿梯度方向更新：
 
@@ -326,22 +326,22 @@ $$ \lambda_C=\max (0, \lambda_C-\alpha{(\sum_{i=1}^M\sum_{j=1}^N(v_{ij}-v_{i0})
 
 3. 固定当前 $\lambda$，通过遍历对 $x_{ij}$ 进行更新，确定第 $j$ 张优惠券的收益最大：
 
-$$j_i= \arg \max_{j} {(v_{ij} - v_{i0})-\lambda_Bc_j+\lambda_C(v_{ij}-v_{i0})t_j} , x_{ij_i}=1$$
+$$j_i= \arg \max_{j} {v_{ij}-\lambda_Bc_j+\lambda_C(v_{ij}-v_{i0})t_j} , x_{ij_i}=1$$
 
 4. 重复2和3，直至 $\lambda$ 收敛
 其中 $\lambda_B$ 、 $\lambda_C$ 和 $\alpha$ 为超参数
 
 线上serving的时候，已知超参数 $\lambda_B, \lambda_C$ ，对于每个请求，遍历每张优惠券，计算收益，确定符合全局收益最大化的优惠券 $x_{i,j}$
 
-$$ \arg \max_{x_{i,j}} (v_{ij} - v_{i0})x_{ij}+\lambda_B(B-c_{j}x_{ij})+\lambda_C\{(v_{ij}-v_{i0})t_{j}x_{ij}-C\}, x_{i,j}=1$$
+$$ \arg \max_{x_{i,j}} v_{ij}x_{ij}+\lambda_B(B-c_{j}x_{ij})+\lambda_C\{(v_{ij}-v_{i0})t_{j}x_{ij}-C\}, x_{i,j}=1$$
 
 即(去掉了公式中的常数项)
 
-$$\arg \max_{j} {(v_{ij} - v_{i0})-\lambda_Bc_j+\lambda_C(v_{ij}-v_{i0})t_j}$$
+$$\arg \max_{j} {v_{ij}-\lambda_Bc_j+\lambda_C(v_{ij}-v_{i0})t_j}$$
 
 **激励形式有优惠券和充赠红包，优惠券有折扣券、现金券、满减券；其中冲赠红包、现金券和满减券有明确的赠款金额；而折扣券都是5折、6折或7折的打折券，没有明确的赠款金额，常基于小流量探索实验阶段收集的训练样本统计折扣券的平均赠款作为赠款金额，用于后续运筹求解**
 
-**优惠券一般为灌发形式，直接灌发到用户的账户里，以弹窗形式展现给用户，频控限制为3天1次，因此其曝光预算等同于发放预算，发放预算高于核销预算，因为用户核销优惠券的概率不恒等于1；充赠红包需要用户充值后再发放红包，在下单页面展示，没有频控限制，一天会曝光多次，其曝光预算高于发放预算。在运筹求解中，优惠券可以用发放预算作为约束求解(如同上例，此时 $B$ 需要除以优惠券核销率得到发放预算)，也可以使用核销预算作为约束求解(如同下式)；但充赠红包用预算求解会出现发放与核销gap较大的情况，必须使用发放预算作为约束，因此相应的约束公式变为：**
+**优惠券一般为灌发形式，直接灌发到用户的账户里，以弹窗形式展现给用户，频控限制为3天1次，因此其曝光预算等同于发放预算，发放预算高于核销预算，因为用户核销优惠券的概率不恒等于1；充赠红包需要用户充值后再发放红包，在下单页面展示，没有频控限制，一天会曝光多次，其曝光预算高于发放预算。在运筹求解中，优惠券可以用发放预算作为约束求解(如同上例，此时 $B$ 需要除以优惠券核销率得到发放预算)，也可以使用核销预算作为约束求解(如同下式)；但充赠红包用发放预算求解会出现发放与核销gap较大的情况，必须使用核销预算作为约束，因此相应的约束公式变为：**
 
 $$ s.t. \sum_{i=1}^{M}\sum_{j=1}^{N} c_{j}v_{ij}x_{i,j} \leq B $$
 
@@ -350,10 +350,10 @@ $$ s.t. \sum_{i=1}^{M}\sum_{j=1}^{N} c_{j}v_{ij}x_{i,j} \leq B $$
 
 |  求解目标 |  预算约束   | 消耗约束  | 求解公式  |
 |  ----    |  ----  | ----  | ---- |
-| $v_{j}- v_{0}$ | $c_{j}$ | $t_{j}$ | $$\arg \max_{j} {v_{ij}- v_{i0}-\lambda_Bc_j+\lambda_Ct_j}$$
-| $v_{j}- v_{0}$ | $c_{j}$ | $(v_{j} - v_{0}) * t_{j}$ | $$\arg \max_{j} {v_{ij}- v_{i0}-\lambda_Bc_j+\lambda_C(v_{ij}-v_{i0})t_j}$$
-| $v_{j}- v_{0}$ | $v_{j} * c_{j}$ | $t_{j}$ | $$\arg \max_{j} {v_{ij}- v_{i0}-\lambda_Bv_{ij}c_j+\lambda_Ct_j}$$
-| $v_{j}- v_{0}$ | $v_{j} * c_{j}$ | $(v_{j} - v_{0}) * t_{j}$ | $$\arg \max_{j} {v_{ij}- v_{i0}-\lambda_Bv_{ij}c_j+\lambda_C(v_{ij}-v_{i0})t_j}$$
+| $v_{j}$ | $c_{j}$ | $t_{j}$ | $$\arg \max_{j} {v_{ij}-\lambda_Bc_j+\lambda_Ct_j}$$
+| $v_{j}$ | $c_{j}$ | $(v_{j} - v_{0}) * t_{j}$ | $$\arg \max_{j} {v_{ij}-\lambda_Bc_j+\lambda_C(v_{ij}-v_{i0})t_j}$$
+| $v_{j}$ | $v_{j} * c_{j}$ | $t_{j}$ | $$\arg \max_{j} {v_{ij}-\lambda_Bv_{ij}c_j+\lambda_Ct_j}$$
+| $v_{j}$ | $v_{j} * c_{j}$ | $(v_{j} - v_{0}) * t_{j}$ | $$\arg \max_{j} {v_{ij}-\lambda_Bv_{ij}c_j+\lambda_C(v_{ij}-v_{i0})t_j}$$
 | ... | ... | ... | ...
 
 
