@@ -296,7 +296,7 @@ https://zhuanlan.zhihu.com/p/451884908
 **举例来说：**
 > 核销预算为 $B$，消耗约束为 $C$，则 $ROI = \frac{C}{B}$,  $v_{i,j}$ 为第 $i$ 个用户使用第 $j$ 张优惠券的转化概率,  $v_{i,0}$ 为第 $i$ 个用户的自然转化概率,  $x_{i,j}$ 为第 $i$ 个用户是否使用第 $j$ 张优惠券,  $c_{j}$ 为第 $j$ 张优惠券的增款,  $t_{j}$ 为第 $j$ 张优惠券的门槛，则优惠券的分配问题可以转化为如下的**整数规划问题**：
 
-$$ \max \sum_{i=1}^{M} \sum_{j=1}^{N} v_{i,j}x_{i,j} $$
+$$ \max \sum_{i=1}^{M} \sum_{j=1}^{N} (v_{i,j} - v_{i,0}) x_{i,j} $$
 
 $$ s.t. \sum_{i=1}^{M}\sum_{j=1}^{N} c_{j}x_{i,j} \leq B $$
 
@@ -310,13 +310,13 @@ $$ x_{i,j} \geq 0, \forall i,j $$
 
 > **整数规划问题**的求解可以采用拉格朗日乘数法，具体如下：
 
-$$ max L(x,\lambda) = {\max_{x}} {\min_{\lambda_B, \lambda_C}}  \sum_{i=1}^M\sum_{j=1}^Nv_{ij}x_{ij}+\lambda_B(B-\sum_{i=1}^M\sum_{j=1}^Nc_{j}x_{ij})+\lambda_C(\sum_{i=1}^M\sum_{j=1}^N(v_{ij}-v_{i0})t_{j}x_{ij}-C) $$
+$$ max L(x,\lambda) = {\max_{x}} {\min_{\lambda_B, \lambda_C}}  \sum_{i=1}^M\sum_{j=1}^N(v_{ij} - v_{i0})x_{ij}+\lambda_B(B-\sum_{i=1}^M\sum_{j=1}^Nc_{j}x_{ij})+\lambda_C(\sum_{i=1}^M\sum_{j=1}^N(v_{ij}-v_{i0})t_{j}x_{ij}-C) $$
 
 求解算法采用ALS(alternating least squares)进行迭代求解：
 
 1. greedy初始化 $x_{ij}$：
 
-$$ j_i= \arg \max_{j} v_{ij} , x_{ij_i}=1 $$
+$$ j_i= \arg \max_{j} (v_{ij} - v_{i0}) , x_{ij_i}=1 $$
 
 2. 对 $\lambda$ 求最小值，沿梯度方向更新：
 
@@ -326,18 +326,18 @@ $$ \lambda_C=\max (0, \lambda_C-\alpha{(\sum_{i=1}^M\sum_{j=1}^N(v_{ij}-v_{i0})
 
 3. 固定当前 $\lambda$，通过遍历对 $x_{ij}$ 进行更新，确定第 $j$ 张优惠券的收益最大：
 
-$$j_i= \arg \max_{j} {v_{ij}-\lambda_Bc_j+\lambda_C(v_{ij}-v_{i0})t_j} , x_{ij_i}=1$$
+$$j_i= \arg \max_{j} {(v_{ij} - v_{i0})-\lambda_Bc_j+\lambda_C(v_{ij}-v_{i0})t_j} , x_{ij_i}=1$$
 
 4. 重复2和3，直至 $\lambda$ 收敛
 其中 $\lambda_B$ 、 $\lambda_C$ 和 $\alpha$ 为超参数
 
 线上serving的时候，已知超参数 $\lambda_B, \lambda_C$ ，对于每个请求，遍历每张优惠券，计算收益，确定符合全局收益最大化的优惠券 $x_{i,j}$
 
-$$ \arg \max_{x_{i,j}} v_{ij}x_{ij}+\lambda_B(B-c_{j}x_{ij})+\lambda_C\{(v_{ij}-v_{i0})t_{j}x_{ij}-C\}, x_{i,j}=1$$
+$$ \arg \max_{x_{i,j}} (v_{ij} - v_{i0})x_{ij}+\lambda_B(B-c_{j}x_{ij})+\lambda_C\{(v_{ij}-v_{i0})t_{j}x_{ij}-C\}, x_{i,j}=1$$
 
 即(去掉了公式中的常数项)
 
-$$\arg \max_{j} {v_{ij}-\lambda_Bc_j+\lambda_C(v_{ij}-v_{i0})t_j}$$
+$$\arg \max_{j} {(v_{ij} - v_{i0})-\lambda_Bc_j+\lambda_C(v_{ij}-v_{i0})t_j}$$
 
 **激励形式有优惠券和充赠红包，优惠券有折扣券、现金券、满减券；其中冲赠红包、现金券和满减券有明确的赠款金额；而折扣券都是5折、6折或7折的打折券，没有明确的赠款金额，常基于小流量探索实验阶段收集的训练样本统计折扣券的平均赠款作为赠款金额，用于后续运筹求解**
 
@@ -350,10 +350,10 @@ $$ s.t. \sum_{i=1}^{M}\sum_{j=1}^{N} c_{j}v_{ij}x_{i,j} \leq B $$
 
 |  求解目标 |  预算约束   | 消耗约束  | 求解公式  |
 |  ----    |  ----  | ----  | ---- |
-| $v_{j}$ | $c_{j}$ | $t_{j}$ | $$\arg \max_{j} {v_{ij}-\lambda_Bc_j+\lambda_Ct_j}$$
-| $v_{j}$ | $c_{j}$ | $(v_{j} - v_{0}) * t_{j}$ | $$\arg \max_{j} {v_{ij}-\lambda_Bc_j+\lambda_C(v_{ij}-v_{i0})t_j}$$
-| $v_{j}$ | $v_{j} * c_{j}$ | $t_{j}$ | $$\arg \max_{j} {v_{ij}-\lambda_Bv_{ij}c_j+\lambda_Ct_j}$$
-| $v_{j}$ | $v_{j} * c_{j}$ | $(v_{j} - v_{0}) * t_{j}$ | $$\arg \max_{j} {v_{ij}-\lambda_Bv_{ij}c_j+\lambda_C(v_{ij}-v_{i0})t_j}$$
+| $v_{j}- v_{0}$ | $c_{j}$ | $t_{j}$ | $$\arg \max_{j} {v_{ij}- v_{i0}-\lambda_Bc_j+\lambda_Ct_j}$$
+| $v_{j}- v_{0}$ | $c_{j}$ | $(v_{j} - v_{0}) * t_{j}$ | $$\arg \max_{j} {v_{ij}- v_{i0}-\lambda_Bc_j+\lambda_C(v_{ij}-v_{i0})t_j}$$
+| $v_{j}- v_{0}$ | $v_{j} * c_{j}$ | $t_{j}$ | $$\arg \max_{j} {v_{ij}- v_{i0}-\lambda_Bv_{ij}c_j+\lambda_Ct_j}$$
+| $v_{j}- v_{0}$ | $v_{j} * c_{j}$ | $(v_{j} - v_{0}) * t_{j}$ | $$\arg \max_{j} {v_{ij}- v_{i0}-\lambda_Bv_{ij}c_j+\lambda_C(v_{ij}-v_{i0})t_j}$$
 | ... | ... | ... | ...
 
 
