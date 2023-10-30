@@ -296,7 +296,7 @@ https://zhuanlan.zhihu.com/p/451884908
 **举例来说：**
 > 核销预算为 $B$，消耗约束为 $C$，则 $ROI = \frac{C}{B}$,  $v_{i,j}$ 为第 $i$ 个用户使用第 $j$ 张优惠券的转化概率,  $v_{i,0}$ 为第 $i$ 个用户的自然转化概率,  $x_{i,j}$ 为第 $i$ 个用户是否使用第 $j$ 张优惠券,  $c_{j}$ 为第 $j$ 张优惠券的增款,  $t_{j}$ 为第 $j$ 张优惠券的门槛，则优惠券的分配问题可以转化为如下的**整数规划问题**：
 
-$$ \max \sum_{i=1}^{M} \sum_{j=0}^{N} (v_{i,j} - v_{i,0}) x_{i,j} = \max \left\{ \sum_{i=1}^{M} \sum_{j=0}^{N} (v_{i,j} x_{i,j}  - v_{i,0} x_{i,j}) \right\} $$
+$$ \max \sum_{i=1}^{M} \sum_{j=0}^{N} (v_{i,j} - v_{i,0}) x_{i,j} = \max \left \lbrace \sum_{i=1}^{M} \sum_{j=0}^{N} (v_{i,j} x_{i,j}  - v_{i,0} x_{i,j}) \right \lbrace $$
 
 $$ = \max \left\{\sum_{i=1}^{M} \sum_{j=0}^{N} v_{i,j} x_{i,j}  - \sum_{i=1}^{M} \sum_{j=0}^{N}  v_{i,0} x_{i,j} \right\} =  \max \left\{ \sum_{i=1}^{M} \sum_{j=0}^{N} v_{i,j} x_{i,j}  - \sum_{i=1}^{M} v_{i,0} \sum_{j=0}^{N} x_{i,j} \right\} = \max \left\{ \sum_{i=1}^{M} \sum_{j=0}^{N} v_{i,j} x_{i,j}  - \sum_{i=1}^{M} v_{i,0} \right\} \iff \max \left\{ \sum_{i=1}^{M} \sum_{j=0}^{N} v_{i,j} x_{i,j} \right\} $$
 
