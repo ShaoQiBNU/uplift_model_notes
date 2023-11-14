@@ -279,7 +279,7 @@ https://zhuanlan.zhihu.com/p/451884908
 |  ----  | ---- | ---- |
 | user_id  | 用户id |  |
 | coupon_id | 优惠券id |  |
-| $B$ | 核销预算 | 预算约束 |
+| $B$ | 核销预算/发放预算 | 预算约束 |
 | $C$ | 现金消耗 | 消耗约束 |
 | coupon_reduce | 优惠券的赠款，即 $c_{j}$ | 预算约束 |
 | coupon_threshold | 优惠券的门槛，即 $t_{j}$ | 消耗约束 |
@@ -342,6 +342,11 @@ $$ \arg \max_{x_{i,j}} v_{ij}x_{ij}+\lambda_B(B-c_{j}x_{ij})+\lambda_C\{(v_{ij}
 即(去掉了公式中的常数项)
 
 $$\arg \max_{j} {v_{ij}-\lambda_Bc_j+\lambda_C(v_{ij}-v_{i0})t_j}$$
+
+**NOTE**
+如果没有ROI的约束，此时 $\lambda_B$ 和 $\max v_{ij}$ 呈单调负相关，可以用二分法求解。对于 $\lambda_B$ 设置上界和下界，设置初始 $\lambda_B$，求解最优 $\max v_{ij}$ ，然后与发放预算 $B$ 比较，如果预算gap大了，则调小 $\lambda_B$，如果预算gap小了，则调大 $\lambda_B$。
+
+业界做法DCAF，参考：https://arxiv.org/pdf/2006.09684.pdf
 
 **激励形式有优惠券和充赠红包，优惠券有折扣券、现金券、满减券；其中冲赠红包、现金券和满减券有明确的赠款金额；而折扣券都是5折、6折或7折的打折券，没有明确的赠款金额，常基于小流量探索实验阶段收集的训练样本统计折扣券的平均赠款作为赠款金额，用于后续运筹求解**
 
