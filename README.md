@@ -433,15 +433,5 @@ $$ = K_{P} (P_{T} - P_{T-1}) + K_{I} P_{T} + K_{D} (P_{T} - 2 * P_{T-1} + P_{T-2
 
 $$ E_{T} = E_{T-1} + \Delta E_{T} $$
 
-
-
-
-
-
-
-
-
-
-
-
+具体代码参考：https://github.com/ShaoQiBNU/uplift_model_notes/blob/main/PID%E8%B0%83%E6%8E%A7%E7%AE%97%E6%B3%95.ipynb
 
