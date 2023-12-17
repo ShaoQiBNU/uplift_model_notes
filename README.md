@@ -285,7 +285,7 @@ https://zhuanlan.zhihu.com/p/451884908
 | coupon_threshold | 优惠券的门槛，即 $t_{j}$ | 消耗约束 |
 | is_convert | 用户在优惠券$j$下的转化概率，即 $v_{j}$ | 求解目标，最大化转化概率 |
 | control_convert | control下的转化概率，即用户自然转化率 $v_{0}$
-| is_convert_uplift | 用户在优惠券$j$的转化概率增益，即 $v_{j} - v_{0}$ | 求解目标，最大化转化概率增益 |
+| is_convert_uplift | 用户在优惠券 $j$ 的转化概率增益，即 $v_{j} - v_{0}$ | 求解目标，最大化转化概率增益 |
 | expected_LTV | 用户期望LTV，即 $v_{j} * LTV$ | 求解目标，最大化LTV |
 | expected_LTV_uplift | 用户期望LTV增益，即 $(v_{j} - v_{0}) * LTV$ | 求解目标，最大化LTV增益 |
 | expected_reduce | $v_{j} * c_{j}$ | 预算约束 |
@@ -418,9 +418,24 @@ $$ D是预算误差的微分，D_{T} = P_{T} - P_{T-1} $$
 
 预算调整公式如下：
 
-$$ B_{T} = B_{T-1} + E_{T} $$
+$$ B_{T} = B_{target} + E_{T} $$
 
-$$ B_{0} = B_{target} $$
+这是位置型PID，实际应用中，常采用增量型PID，方便存储和计算，具体公式如下：
+
+$$ E_{T} = K_{P} P_{T} + K_{I} I_{T} + K_{D} D_{T} $$
+
+$$ E_{T-1} = K_{P} P_{T-1} + K_{I} I_{T-1} + K_{D} D_{T-1} $$
+
+$$ \Delta E_{T} = K_{P} (P_{T} - P_{T-1}) + K_{I} (I_{T} - I_{T-1}) + K_{D} (D_{T} - D_{T-1}) $$
+
+
+$$ = K_{P} (P_{T} - P_{T-1}) + K_{I} P_{T} + K_{D} (P_{T} - 2 * P_{T-1} + P_{T-2}) $$
+
+$$ E_{T} = E_{T-1} + \Delta E_{T} $$
+
+
+
+
 
 
 
