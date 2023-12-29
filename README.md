@@ -344,7 +344,7 @@ $$ \arg \max_{x_{i,j}} v_{ij}x_{ij}+\lambda_B(B-c_{j}x_{ij})+\lambda_C\{(v_{ij}
 $$\arg \max_{j} {v_{ij}-\lambda_Bc_j+\lambda_C(v_{ij}-v_{i0})t_j}$$
 
 **NOTE**
-如果没有ROI的约束，此时 $\lambda_B$ 和 $\max v_{ij}$ 呈单调负相关，可以用二分法求解。对于 $\lambda_B$ 设置上界和下界，设置初始 $\lambda_B$，求解最优 $\max v_{ij}$ ，然后与发放预算 $B$ 比较，如果预算gap大了，则调小 $\lambda_B$，如果预算gap小了，则调大 $\lambda_B$。
+如果没有ROI的约束，此时 $\lambda_B$ 和 $\max v_{ij}$ 呈单调负相关，可以用二分法求解。对于 $\lambda_B$ 设置上界和下界，设置初始 $\lambda_B$，求解最优 $\max v_{ij}$ ，计算发放预算与设定的发放预算 $B$ 比较，如果计算的发放预算高于 $B$ ，则调大 $\lambda_B$，如果计算的发放预算小于 $B$ ，则调小 $\lambda_B$。
 
 业界做法DCAF，参考：https://arxiv.org/pdf/2006.09684.pdf
 
