@@ -391,6 +391,9 @@ $$ s.t. \sum_{i=1}^{M}\sum_{j=1}^{N} c_{j}v_{ij}x_{i,j} \leq B $$
 
 根据2和3更新参数求解，得到每个用户的最优解，具体见：https://github.com/ShaoQiBNU/uplift_model_notes/blob/main/%E5%8D%83%E4%BA%BA%E5%8D%83%E5%88%B8MCKP%E6%B1%82%E8%A7%A3.ipynb
 
+3. DCAF的二分查找求解
+具体见：https://github.com/ShaoQiBNU/uplift_model_notes/blob/main/%E5%8D%83%E4%BA%BA%E5%8D%83%E5%88%B8MCKP%E6%B1%82%E8%A7%A3.ipynb
+
 
 拉格朗日乘数法参考：
 
