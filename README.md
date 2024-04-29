@@ -295,7 +295,7 @@ https://zhuanlan.zhihu.com/p/451884908
 | $C$ | 现金消耗 | 消耗约束 |
 | coupon_reduce | 优惠券的赠款，即 $c_{j}$ | 预算约束 |
 | coupon_threshold | 优惠券的门槛，即 $t_{j}$ | 消耗约束 |
-| is_convert | 用户在优惠券$j$下的转化概率，即 $v_{j}$ | 求解目标，最大化转化概率 |
+| is_convert | 用户在优惠券 $j$ 下的转化概率，即 $v_{j}$ | 求解目标，最大化转化概率 |
 | control_convert | control下的转化概率，即用户自然转化率 $v_{0}$
 | is_convert_uplift | 用户在优惠券 $j$ 的转化概率增益，即 $v_{j} - v_{0}$ | 求解目标，最大化转化概率增益 |
 | expected_LTV | 用户期望LTV，即 $v_{j} * LTV$ | 求解目标，最大化LTV |
