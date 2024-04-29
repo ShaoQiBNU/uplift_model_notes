@@ -178,7 +178,7 @@ $$ Q_\pi(k) = \sum_{i=1}^k (R^T_\pi(i) - R^C_\pi(i)\frac{N^T_\pi(i)}{N^C_\pi(i)}
 
 $$ Qini \; Coefficient = \frac{\int Q_\pi(\rho ) {\rm d}\rho}{\int Q^*_\pi(\rho ) {\rm d}\rho} $$ 
 
-$$ {\int Q^*_\pi(\rho ) {\rm d}\rho}代表best \; model算出来的面积 $$
+$$ {\int Q^*_\pi(\rho ) {\rm d}\rho}代表best  model算出来的面积 $$
 
 Qini Curve在实际情况中通常会比Uplift Curve更好，主要是因为Qini Curve可以处理treatment 组和contorl 组样本数量差异大的情况，具有稳定性，所以 Qini coefficient 会比AUUC 更实用一些。
 
