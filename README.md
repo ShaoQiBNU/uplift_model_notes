@@ -356,6 +356,7 @@ $$ \arg \max_{x_{i,j}} v_{ij}x_{ij}+\lambda_B(B-c_{j}x_{ij})+\lambda_C\{(v_{ij}
 $$\arg \max_{j} {v_{ij}-\lambda_Bc_j+\lambda_C(v_{ij}-v_{i0})t_j}$$
 
 **NOTE**
+
 如果没有ROI的约束，此时 $\lambda_B$ 和 $\max v_{ij}$ 呈单调负相关，可以用二分法求解。对于 $\lambda_B$ 设置上界和下界，设置初始 $\lambda_B$，求解最优 $\max v_{ij}$ 。计算发放预算与设定的发放预算 $B$ 比较，如果计算的发放预算高于 $B$ ，说明要少花钱，则调大 $\lambda_B$ ; 如果计算的发放预算小于 $B$ ，说明要多花钱，则调小 $\lambda_B$。
 
 如果没有预算的约束，此时 $\lambda_C$ 和 $\max v_{ij}$ 呈单调负相关，可以用二分法求解。对于 $\lambda_C$ 设置上界和下界，设置初始 $\lambda_C$，求解最优 $\max v_{ij}$ 。计算现金消耗与设定的现金消耗 $C$ 比较，如果计算的现金消耗高于 $C$ ，说明要多花钱，则调大 $\lambda_C$ ; 如果计算的现金消耗小于 $C$ ，说明要少花钱，则调小 $\lambda_C$。
